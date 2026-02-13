@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Códigos 🏆</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+        :root { --rosa: #fb6f92; --claro: #ffc8dd; --texto: #8a5a6a; }
+        body { background-color: #fff0f5; font-family: 'Quicksand', sans-serif; padding: 20px; color: var(--texto); }
+        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
+        .dropbtn { background: white; color: var(--rosa); padding: 10px 20px; border-radius: 25px; border: 2px solid var(--claro); font-weight: bold; cursor: pointer; }
+        .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background: white; border-radius: 20px; border: 2px solid var(--claro); overflow: hidden; }
+        .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
+        .show { display: block; }
+        .container { max-width: 400px; margin: 60px auto; background: white; padding: 25px; border-radius: 30px; border: 4px solid var(--claro); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: var(--rosa); border-bottom: 2px solid var(--claro); padding: 10px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .status { font-weight: bold; padding: 4px 8px; border-radius: 10px; font-size: 0.75rem; }
+        .pendiente { background: #fff3cd; color: #856404; }
+        .canjeado { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="dropdown">
+            <button onclick="document.getElementById('myDropdown').classList.toggle('show')" class="dropbtn">☰ Menú</button>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="../index.html">🏠 Inicio</a>
+                <a href="jump.html">🏃 Snoopy Jump</a>
+                <a href="quizgame.html">🧠 Preguntados</a>
+                <a href="memorygame.html">🧩 Memoria</a>
+                <a href="djsnoopy.html">🎵 Dj Snoopy</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h2 style="text-align:center; color: var(--rosa);">🏆 Mis Códigos</h2>
+        <table>
+            <thead><tr><th>Código</th><th>Estado</th></tr></thead>
+            <tbody id="lista"></tbody>
+        </table>
+    </div>
+    <script>
+        const conseguidos = JSON.parse(localStorage.getItem('codigosConseguidos')) || [];
+        const canjeados = JSON.parse(localStorage.getItem('codigosCanjeados')) || [];
+        const tbody = document.getElementById('lista');
+        conseguidos.forEach(c => {
+            const isC = canjeados.includes(c);
+            const row = document.createElement('tr');
+            row.innerHTML = `<td><strong>${c.toUpperCase()}</strong></td><td><span class="status ${isC?'canjeado':'pendiente'}">${isC?'✅ CANJEADO':'⏳ PENDIENTE'}</span></td>`;
+            tbody.appendChild(row);
+        });
+        window.onclick = e => { if (!e.target.matches('.dropbtn')) document.getElementById("myDropdown").classList.remove('show'); }
+    </script>
+</body>
+</html>

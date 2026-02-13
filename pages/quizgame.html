@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juego de Preguntas ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+        :root { --rosa-fuerte: #fb6f92; --rosa-claro: #ffc8dd; --texto: #8a5a6a; --fondo: #fff0f5; }
+        body { background-color: var(--fondo); font-family: 'Quicksand', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
+        .dropbtn { background-color: white; color: var(--rosa-fuerte); padding: 10px 20px; font-size: 1rem; font-weight: bold; border: 2px solid var(--rosa-claro); border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10 rgba(0,0,0,0.05); }
+        .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background-color: white; min-width: 180px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--rosa-claro); overflow: hidden; }
+        .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
+        .show { display: block; }
+        .quiz-card { background: white; padding: 35px 25px; border-radius: 40px; box-shadow: 0 15px 40px rgba(251,111,146,0.15); width: 100%; max-width: 400px; text-align: center; margin-top: 60px; border: 4px solid white; outline: 3px solid var(--rosa-claro); position: relative; }
+        .timer-container { font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin-bottom: 10px; }
+        .timer-low { color: #e63946; animation: shake 0.5s infinite; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(2px); } 50% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
+        .question-text { font-size: 1.2rem; font-weight: 700; color: var(--texto); margin-bottom: 25px; min-height: 60px; }
+        .options-grid { display: grid; gap: 12px; }
+        .option-btn { background: var(--fondo); border: 2px solid var(--rosa-claro); padding: 15px; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: 600; color: var(--texto); transition: 0.3s; font-size: 1rem; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 30px; z-index: 2000; width: 85%; max-width: 320px; text-align: center; border: 5px solid var(--rosa-claro); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; backdrop-filter: blur(4px); }
+        .btn { background: var(--rosa-fuerte); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; font-family: inherit; }
+        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #ddd; }
+        .dot.active { background: var(--rosa-fuerte); }
+        .snoopy-thinking { width: 120px; height: auto; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="dropdown">
+            <button onclick="document.getElementById('myDropdown').classList.toggle('show')" class="dropbtn">☰ Menú</button>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="../index.html">🏠 Inicio</a>
+                <a href="jump.html">🏃 Snoopy Jump</a>
+                <a href="memorygame.html">🧩 Memoria</a>
+                <a href="djsnoopy.html">🎵 Dj Snoopy</a>
+                <a href="codigos.html">🏆 Mis Códigos</a>
+                <a onclick="resetQuestionsAdmin()">🧹 Reset Preguntas (Admin)</a>
+                <a onclick="resetDailyAdmin()">🔓 Reset Diario (Admin)</a>
+            </div>
+        </div>
+    </nav>
+    <div id="intro-overlay" class="overlay" style="display: block;"></div>
+    <div id="intro-modal" class="modal" style="display: block;">
+        <img src="../assets/images/snoopy_pensando.png" alt="Snoopy Pensando" class="snoopy-thinking">
+        <h2>Este es el Desafío Diario ✨</h2>
+        <p>¿Qué tan bien me y nos conocés? <br><br> • Hay 5 preguntas nuevas cada día.<br> • Las que respondas bien, no vuelven a salir, pero las que respondas mal, pueden volver a salir otro día.<br> • Si respondes las 5 bien de seguido, te doy un código.<br> • Si fallas una sola, tenés que esperar hasta el día siguiente.<br> • Tenes 30 segundos para responder cada una.</p>
+        <button class="btn" onclick="startGame()">EMPEZAR AHORA</button>
+    </div>
+    <div class="quiz-card" id="quiz-ui">
+        <div class="timer-container" id="timer">30s</div>
+        <div class="progress-dots" id="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="question-text" id="q-text">Cargando...</div>
+        <div class="options-grid" id="options"></div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    <div id="status-modal" class="modal">
+        <h2 id="modal-title"></h2>
+        <p id="modal-msg"></p>
+        <div id="codigo-box" style="display:none; font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin: 15px 0; background: var(--fondo); padding: 10px; border-radius: 10px;"></div>
+        <button class="btn" onclick="location.href='../index.html'">Volver</button>
+    </div>
+
+    <script>
+        const POOL_PREGUNTAS = [
+            { id: 1, q: "¿Cuál es mi color favorito?", o: ["Azul", "Negro", "Verde", "Rojo"], a: 3 },
+            { id: 2, q: "¿En qué ciudad nací?", o: ["Barranqueras", "Resistencia", "Corrientes", "Fontana"], a: 1 },
+            { id: 3, q: "¿Cuál es mi perfume favorito de mi colección?", o: ["Banderas KOF", "Bad Boy CH", "Bensimon Brave"], a: 1 },
+            { id: 4, q: "¿Cuál es mi videojuego favorito de toda la vida?", o: ["Silent Hill 2", "Resident Evil 4", "Half-Life 2", "Asassins Creed 3"], a: 2 },
+            { id: 5, q: "¿Mi nombre en videojuegos es...?", o: ["Ivanov", "Tuki", "DarkCrow", "Sokolov"], a: 3 },
+            { id: 6, q: "¿Qué prefiero comer?", o: ["Milanesas", "Hamburguesas", "Pizza", "Torta Parrilla"], a: 2 },
+            { id: 7, q: "¿Cuál carrera nunca estudié?", o: ["Programación", "Psciología", "Contador", "Informática"], a: 3 },
+            { id: 8, q: "¿Qué película NO vimos juntos?", o: ["7 Magníficos", "Harta", "Thunderbolts", "Recuerdame"], a: 3 },
+            { id: 9, q: "¿Primera serie que vimos?", o: ["La de la Prision", "Nadie quiere esto", "Ozarks", "Brooklyn 99"], a: 1 },
+            { id: 10, q: "¿Sabor de helado favorito?", o: ["Dulce de Leche", "Granizado", "Rocher", "Bananasplit"], a: 0 },
+            { id: 11, q: "¿Color de pelo que NUNCA tuve?", o: ["Celeste", "Rojo", "Blanco", "Verde"], a: 3 },
+            { id: 12, q: "¿Nombre de mi Abuela?", o: ["Bettina", "Roberta", "Roxana", "Daniela"], a: 1 },
+            { id: 13, q: "¿Cuál NO fue un trabajo mío?", o: ["Bombero", "Mozo", "Quinielero", "Creador de Contenido"], a: 2},
+            { id: 14, q: "¿Consola favorita?", o: ["PS3", "PS2", "Xbox 360", "PS1"], a: 1 },
+            { id: 15, q: "¿Primer lugar donde cenamos?", o: ["Shopping", "Foodie", "La Usina", "La Pettit"], a: 1 },
+            { id: 16, q: "¿Alfajor favorito?", o: ["Águila Brownie", "Rasta Negro", "Terrabusi", "Chocotorta"], a: 0 },
+            { id: 17, q: "¿Cuantas cosas (materiales) te regalé en tu cumple años?", o: ["Tres", "Cuatro", "Dos", "Cinco"], a: 0 },
+            { id: 18, q: "¿Qué comimos la 1ra vez que viniste a casa?", o: ["Chipa/Pizza", "Hamburguesa", "Chipa/Burger", "Solo Burger"], a: 2 },
+            { id: 19, q: "¿Deporte que NUNCA entrené?", o: ["Futbol", "Voley", "Basquet", "Natación"], a: 3 },
+            { id: 20, q: "¿Película animada favorita?", o: ["Tarzan", "UP", "Planeta Tesoro", "Wall-E"], a: 2 },
+            { id: 21, q: "¿Superhéroe favorito tras Spidey?", o: ["Daredevil", "Superman", "Star-Lord", "Thor"], a: 0},
+            { id: 22, q: "¿Artista favorito?", o: ["Manson", "Cerati", "Tan Bionica", "Avril"], a: 2 },
+            { id: 23, q: "¿Qué tanto me amas?", o: ["Mucho", "Muchísimo", "Tanto que te compro una Play 5", "Algo"], a: 2 },
+            { id: 24, q: "Si un hombre te habla...", o: ["Le contesto", "Le Disparo", "Aviso a Iván", "Ignoro"], a: 1 },
+            { id: 25, q: "¿Cuál de estos Artistas NO soporto su música?", o: ["Bad Bunny", "Maria Becerra", "La Joaqui", "Milo J"], a: 2 },
+            { id: 26, q: "¿Cuál de estas cosas guardo sin contexto en el cajon de mi mesita de luz?", o: ["Un Silbato", "Una Lija", "Una Toallita Femenina", "Todas"], a: 3 },
+            { id: 27, q: "¿Cuantos Meses pasaron desde que hablamos hasta ser Novios?", o: ["5", "3", "6", "4"], a: 0},
+            { id: 28, q: "¿De cuál de estos superhéroes no tengo juguete o peluche?", o: ["Capitana Marvel", "Batman", "Spider-Man", "Superman"], a: 3 },
+            { id: 29, q: "¿En qué brazo tengo una cicatriz?", o: ["Izquierdo", "Derecho", "Ninguno"], a: 2 },
+            { id: 30, q: "¿De qué marca es el auto de mi papá?", o: ["Peugeot", "Chevrolet", "Volkwswagen", "Toyota"], a: 3 }
+        ];
+        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "snoopy", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
+        let dailySet = [], currentIndex = 0, timer, timeLeft = 30;
+        function initQuiz() {
+            const lastDate = localStorage.getItem('quizLastDate'); const now = new Date().toLocaleDateString();
+            if (lastDate !== now) { localStorage.removeItem('quizState'); localStorage.removeItem('quizDailySet'); localStorage.removeItem('quizCurrentIndex'); localStorage.setItem('quizLastDate', now); }
+            const state = localStorage.getItem('quizState');
+            if (state === 'won' || state === 'failed' || state === 'in_progress') {
+                document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none';
+                if(state === 'won') showModal("Ya sacaste tu código diario 🌟", "Volvé mañana para más.");
+                else if(state === 'in_progress') failGame("Abandonaste el desafío anterior...");
+                else showModal("Día bloqueado ❌", "Intentá de nuevo mañana.");
+            }
+        }
+        function startGame() {
+            localStorage.setItem('quizState', 'in_progress');
+            const hist = JSON.parse(localStorage.getItem('quizCorrectasHistoricas')) || [];
+            const pool = POOL_PREGUNTAS.filter(p => !hist.includes(p.id));
+            if (pool.length < 5) { showModal("¡Genia! 🎓", "Respondiste casi todo."); return; }
+            document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none';
+            const saved = localStorage.getItem('quizDailySet');
+            if (saved) { dailySet = JSON.parse(saved); currentIndex = parseInt(localStorage.getItem('quizCurrentIndex')) || 0; }
+            else { dailySet = pool.sort(() => 0.5 - Math.random()).slice(0, 5); localStorage.setItem('quizDailySet', JSON.stringify(dailySet)); currentIndex = 0; }
+            renderQuestion();
+        }
+        function startTimer() {
+            clearInterval(timer); timeLeft = 30; const tDiv = document.getElementById('timer'); tDiv.classList.remove('timer-low'); tDiv.innerText = "30s";
+            timer = setInterval(() => { timeLeft--; tDiv.innerText = timeLeft + "s"; if (timeLeft <= 10) tDiv.classList.add('timer-low'); if (timeLeft <= 0) { clearInterval(timer); failGame("¡Tiempo agotado! ⏰"); } }, 1000);
+        }
+        function renderQuestion() {
+            startTimer(); const q = dailySet[currentIndex]; document.getElementById('q-text').innerText = q.q;
+            const optDiv = document.getElementById('options'); optDiv.innerHTML = "";
+            q.o.forEach((opt, i) => { const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = opt; btn.onclick = () => checkAnswer(i); optDiv.appendChild(btn); });
+            const dots = document.querySelectorAll('.dot'); dots.forEach((d, i) => d.className = i < currentIndex ? 'dot active' : 'dot');
+        }
+        function checkAnswer(idx) {
+            clearInterval(timer);
+            if (idx === dailySet[currentIndex].a) {
+                let hist = JSON.parse(localStorage.getItem('quizCorrectasHistoricas')) || [];
+                if(!hist.includes(dailySet[currentIndex].id)) { hist.push(dailySet[currentIndex].id); localStorage.setItem('quizCorrectasHistoricas', JSON.stringify(hist)); }
+                currentIndex++; localStorage.setItem('quizCurrentIndex', currentIndex);
+                if (currentIndex === 5) winGame(); else renderQuestion();
+            } else { failGame("Incorrecto 💔"); }
+        }
+        function winGame() {
+            localStorage.setItem('quizState', 'won');
+            let cons = JSON.parse(localStorage.getItem('codigosConseguidos')) || [];
+            let disp = CODIGOS_MAESTROS.filter(c => !cons.includes(c));
+            let premio = disp.length > 0 ? disp[Math.floor(Math.random()*disp.length)] : "CAMPEONA";
+            if(disp.length > 0) { cons.push(premio); localStorage.setItem('codigosConseguidos', JSON.stringify(cons)); }
+            document.getElementById('codigo-box').innerText = premio.toUpperCase(); document.getElementById('codigo-box').style.display = 'block';
+            showModal("¡PERFECTO! 🏆", "Tu código de hoy:");
+        }
+        function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg + " Mañana volvés a intentar."); }
+        function showModal(title, msg) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; document.getElementById('overlay').style.display = 'block'; document.getElementById('status-modal').style.display = 'block'; }
+        function resetQuestionsAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizCorrectasHistoricas'); location.reload(); } }
+        function resetDailyAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizLastDate'); localStorage.removeItem('quizState'); location.reload(); } }
+        initQuiz();
+    </script>
+</body>
+</html>
