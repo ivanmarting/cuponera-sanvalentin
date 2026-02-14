@@ -28,12 +28,11 @@
         #game-ui { position: absolute; width: 100%; text-align: center; top: 60px; pointer-events: none; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); z-index: 100; }
         .score { font-size: 1.8rem; color: white; font-weight: bold; }
         
-        /* BOTONES OCULTOS POR DEFECTO */
         .mobile-controls { 
             position: fixed; 
             top: 42%; 
             width: 100%; 
-            display: none; /* Se activa en startGame() */
+            display: none; 
             justify-content: space-between; 
             padding: 0 25px; 
             box-sizing: border-box; 
@@ -86,7 +85,7 @@
     <div id="game-ui">
         <div class="score">Puntos: <span id="current-score">0</span></div>
         <div style="font-weight: bold; color: #eee; font-size: 0.9rem;">Récord: <span id="high-score">0</span></div>
-        <div style="color: #ffc8dd; font-size: 0.9rem; font-weight: bold; margin-top: 5px;">Meta: <span id="target-ui">3000</span></div>
+        <div style="color: #ffc8dd; font-size: 0.9rem; font-weight: bold; margin-top: 5px;">Meta: <span id="target-ui">1000</span></div>
     </div>
 
     <div class="mobile-controls" id="touch-controls">
@@ -97,7 +96,7 @@
     <div id="overlay"></div>
     <div id="start-screen"><div class="modal">
         <h2 style="color: var(--rosa)">Snoopy Skate 🛹</h2>
-        <p>Llega a <b id="start-target">3000</b> puntos para el código.<br><br>
+        <p>Llega a <b id="start-target">1000</b> puntos para el código.<br><br>
         🚗 Salta los autos<br>
         🐦 Agáchate con los pájaros</p>
         <button class="btn" onclick="startGame()">¡EMPEZAR!</button>
@@ -133,12 +132,14 @@
         let gameRunning = false, score = 0, obstacles = [], frame = 0, gameSpeed = 7, buildings = [], groundY;
         let highScore = parseInt(localStorage.getItem('jumpHighScore')) || 0;
         let jumpCodesCount = parseInt(localStorage.getItem('jumpCodesWonCount')) || 0;
-        let currentGoal = 3000 + (jumpCodesCount * 500);
+        
+        // REGLA: 1000 base + 500 por cada código ganado en este juego
+        let currentGoal = 1000 + (jumpCodesCount * 500);
 
         const player = { x: 50, y: 0, w: 85, h: 70, dy: 0, jumpForce: 15, gravity: 0.8, grounded: false, ducking: false, baseH: 70, duckH: 35 };
 
         function updateGoal() {
-            currentGoal = 3000 + (jumpCodesCount * 500);
+            currentGoal = 1000 + (jumpCodesCount * 500);
             document.getElementById('target-ui').innerText = currentGoal;
             document.getElementById('start-target').innerText = currentGoal;
         }
@@ -154,9 +155,7 @@
         document.getElementById('btn-jump').addEventListener('touchstart', (e) => { 
             e.preventDefault(); 
             if(player.grounded && gameRunning) {
-                sfxJump.currentTime = 0;
-                sfxJump.play();
-                jump();
+                sfxJump.currentTime = 0; sfxJump.play(); jump();
             }
         });
         document.getElementById('btn-duck').addEventListener('touchstart', (e) => { e.preventDefault(); duck(true); });
@@ -182,28 +181,42 @@
             updateGoal(); 
             document.getElementById('start-screen').style.display = 'none'; 
             document.getElementById('overlay').style.display = 'none'; 
-            // ACTIVAR BOTONES
             document.getElementById('touch-controls').style.display = 'flex';
             gameRunning = true; score = 0; obstacles = []; frame = 0; gameSpeed = 7; 
-            music.play(); 
-            loop(); 
+            music.play(); loop(); 
         }
 
         function loop() {
             if(!gameRunning) return;
             ctx.clearRect(0,0, canvas.width, canvas.height); frame++;
-            if(score > 0 && score % 1000 === 0) gameSpeed += 0.1;
+            
+            // Aceleración inicial leve
+            if(score > 0 && score % 1000 === 0 && gameSpeed < 11) {
+                gameSpeed += 0.02;
+            }
+
             drawEnvironment();
             player.dy += player.gravity; player.y += player.dy;
             if(player.y + player.h > groundY) { player.y = groundY - player.h; player.dy = 0; player.grounded = true; }
+
             let bob = (player.grounded && !player.ducking) ? Math.sin(frame * 0.2) * 3 : 0;
             ctx.save(); ctx.translate(player.x + player.w, player.y + bob); ctx.scale(-1, 1); ctx.drawImage(snoopyImg, 0, 0, player.w, player.h); ctx.restore();
+
             if(frame % 100 === 0) spawn();
+            
             obstacles.forEach((o, i) => {
-                o.x -= gameSpeed; ctx.drawImage(o.type === 'car' ? carImg : birdImg, o.x, o.y, o.w, o.h);
+                o.x -= gameSpeed; 
+                ctx.drawImage(o.type === 'car' ? carImg : birdImg, o.x, o.y, o.w, o.h);
+
                 let hit = false;
-                if (o.type === 'car') { hit = player.x < o.x + o.w - 15 && player.x + player.w > o.x + 15 && player.y + player.h > o.y + 10; }
-                else { if (!player.ducking) { hit = player.x < o.x + o.w - 10 && player.x + player.w > o.x + 10 && player.y < o.y + o.h + 100; } }
+                if (o.type === 'car') {
+                    hit = player.x < o.x + o.w - 15 && player.x + player.w > o.x + 15 && player.y + player.h > o.y + 10;
+                } else {
+                    if (!player.ducking) {
+                        hit = player.x < o.x + o.w - 10 && player.x + player.w > o.x + 10 && player.y < o.y + o.h + 100; 
+                    }
+                }
+
                 if(hit) gameOver();
                 if(o.x + o.w < 0) { 
                     obstacles.splice(i,1); score += 100; document.getElementById('current-score').innerText = score; 
@@ -216,8 +229,11 @@
 
         function spawn() {
             const isBird = Math.random() > 0.6;
-            if (isBird) { obstacles.push({ x: canvas.width, y: groundY - 110, w: 55, h: 45, type: 'bird' }); }
-            else { obstacles.push({ x: canvas.width, y: groundY - 45, w: 80, h: 50, type: 'car' }); }
+            if (isBird) {
+                obstacles.push({ x: canvas.width, y: groundY - 110, w: 55, h: 45, type: 'bird' });
+            } else {
+                obstacles.push({ x: canvas.width, y: groundY - 45, w: 80, h: 50, type: 'car' });
+            }
         }
 
         function drawEnvironment() {
@@ -234,19 +250,24 @@
                 let conseguidos = JSON.parse(localStorage.getItem('codigosConseguidos')) || [];
                 let disp = CODIGOS_MAESTROS.filter(c => !conseguidos.includes(c));
                 let premio = disp.length > 0 ? disp[Math.floor(Math.random()*disp.length)] : "¡CAMPEONA!";
-                if(disp.length > 0) { conseguidos.push(premio); localStorage.setItem('codigosConseguidos', JSON.stringify(conseguidos)); localStorage.setItem('jumpWinTime', Date.now()); jumpCodesCount++; localStorage.setItem('jumpCodesWonCount', jumpCodesCount); updateGoal(); }
+                if(disp.length > 0) { 
+                    conseguidos.push(premio); 
+                    localStorage.setItem('codigosConseguidos', JSON.stringify(conseguidos)); 
+                    localStorage.setItem('jumpWinTime', Date.now()); 
+                    jumpCodesCount++; 
+                    localStorage.setItem('jumpCodesWonCount', jumpCodesCount); 
+                    updateGoal(); 
+                }
                 document.getElementById('codigo-premio').innerText = premio.toUpperCase(); document.getElementById('win-screen').style.display = 'block'; document.getElementById('overlay').style.display = 'block';
             }
         }
 
         function gameOver() { 
-            gameRunning = false; 
-            music.pause(); 
-            sfxCrash.play(); 
-            setTimeout(() => { alert("¡Chocaste! Puntaje: " + score); location.reload(); }, 100);
+            gameRunning = false; music.pause(); sfxCrash.play(); 
+            setTimeout(() => { alert("¡Chocaste! Puntaje: " + score); location.reload(); }, 100); 
         }
         function closeWin() { document.getElementById('win-screen').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; gameRunning = true; loop(); }
-        function resetCooldown() { if(prompt("Admin:") === "ivancito") { localStorage.removeItem('jumpWinTime'); localStorage.setItem('jumpCodesWonCount', 0); location.reload(); } }
+        function resetCooldown() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('jumpWinTime'); localStorage.setItem('jumpCodesWonCount', 0); location.reload(); } }
         window.onclick = e => { if (!e.target.matches('.dropbtn')) document.getElementById("myDropdown").classList.remove('show'); }
     </script>
 </body>
