@@ -8,11 +8,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
         :root { --rosa-fuerte: #fb6f92; --rosa-claro: #ffc8dd; --texto: #8a5a6a; --fondo: #fff0f5; }
         body { background-color: var(--fondo); font-family: 'Quicksand', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
+        
+        /* AJUSTE: Navbar con el z-index más alto de todos para que el menú sea siempre clicable */
+        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 3000; }
+        
         .dropbtn { background-color: white; color: var(--rosa-fuerte); padding: 10px 20px; font-size: 1rem; font-weight: bold; border: 2px solid var(--rosa-claro); border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10 rgba(0,0,0,0.05); }
         .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background-color: white; min-width: 180px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--rosa-claro); overflow: hidden; }
         .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
         .show { display: block; }
+
         .quiz-card { background: white; padding: 35px 25px; border-radius: 40px; box-shadow: 0 15px 40px rgba(251,111,146,0.15); width: 100%; max-width: 400px; text-align: center; margin-top: 60px; border: 4px solid white; outline: 3px solid var(--rosa-claro); position: relative; }
         .timer-container { font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin-bottom: 10px; }
         .timer-low { color: #e63946; animation: shake 0.5s infinite; }
@@ -20,8 +24,11 @@
         .question-text { font-size: 1.2rem; font-weight: 700; color: var(--texto); margin-bottom: 25px; min-height: 60px; }
         .options-grid { display: grid; gap: 12px; }
         .option-btn { background: var(--fondo); border: 2px solid var(--rosa-claro); padding: 15px; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: 600; color: var(--texto); transition: 0.3s; font-size: 1rem; }
+        
+        /* Modales con z-index alto pero menor que la navbar */
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 30px; z-index: 2000; width: 85%; max-width: 320px; text-align: center; border: 5px solid var(--rosa-claro); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; backdrop-filter: blur(4px); }
+        
         .btn { background: var(--rosa-fuerte); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; font-family: inherit; }
         .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
         .dot { width: 12px; height: 12px; border-radius: 50%; background: #ddd; }
@@ -45,6 +52,7 @@
             </div>
         </div>
     </nav>
+
     <div id="intro-overlay" class="overlay" style="display: block;"></div>
     <div id="intro-modal" class="modal" style="display: block;">
         <img src="../assets/images/snoopy_pensando.png" alt="Snoopy Pensando" class="snoopy-thinking">
@@ -52,12 +60,14 @@
         <p>¿Qué tan bien me y nos conocés? <br><br> • Hay 5 preguntas nuevas cada día.<br> • Las que respondas bien, no vuelven a salir, pero las que respondas mal, pueden volver a salir otro día.<br> • Si respondes las 5 bien de seguido, te doy un código.<br> • Si fallas una sola, tenés que esperar hasta el día siguiente.<br> • Tenes 30 segundos para responder cada una.</p>
         <button class="btn" onclick="startGame()">EMPEZAR AHORA</button>
     </div>
+
     <div class="quiz-card" id="quiz-ui">
         <div class="timer-container" id="timer">30s</div>
         <div class="progress-dots" id="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="question-text" id="q-text">Cargando...</div>
         <div class="options-grid" id="options"></div>
     </div>
+
     <div class="overlay" id="overlay"></div>
     <div id="status-modal" class="modal">
         <h2 id="modal-title"></h2>
@@ -163,9 +173,9 @@
             showModal("¡PERFECTO! 🏆", "Ganaste el código de hoy:");
         }
         function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg + " Mañana volvés a intentar."); }
+        
         function showModal(title, msg) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; document.getElementById('overlay').style.display = 'block'; document.getElementById('status-modal').style.display = 'block'; }
         
-        // FUNCIÓN NUEVA: Recompensa un intento extra sin resetear la fecha del día
         function rewardAttemptAdmin() {
             if(prompt("Pass Admin:") === "ivancito") {
                 localStorage.removeItem('quizState');
@@ -174,9 +184,16 @@
                 location.reload();
             }
         }
-
         function resetQuestionsAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizCorrectasHistoricas'); location.reload(); } }
         function resetDailyAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizLastDate'); localStorage.removeItem('quizState'); location.reload(); } }
+        
+        window.onclick = e => { 
+            if (e.target.matches('.dropbtn')) {
+                document.getElementById("myDropdown").classList.toggle('show');
+            } else {
+                document.getElementById("myDropdown").classList.remove('show');
+            }
+        }
         initQuiz();
     </script>
 </body>
