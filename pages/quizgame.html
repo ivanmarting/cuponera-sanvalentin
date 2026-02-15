@@ -9,23 +9,58 @@
         :root { --rosa-fuerte: #fb6f92; --rosa-claro: #ffc8dd; --texto: #8a5a6a; --fondo: #fff0f5; }
         body { background-color: var(--fondo); font-family: 'Quicksand', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
         
-        /* AJUSTE: Navbar con el z-index más alto de todos para que el menú sea siempre clicable */
-        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 3000; }
+        /* FIX DEFINITIVO PARA EL MENÚ */
+        .navbar { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            display: flex; 
+            justify-content: flex-end; 
+            padding: 15px; 
+            box-sizing: border-box; 
+            z-index: 10000 !important; /* Por encima de todo */
+            pointer-events: none; /* Deja pasar los clics a lo que está abajo... */
+        }
         
-        .dropbtn { background-color: white; color: var(--rosa-fuerte); padding: 10px 20px; font-size: 1rem; font-weight: bold; border: 2px solid var(--rosa-claro); border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10 rgba(0,0,0,0.05); }
-        .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background-color: white; min-width: 180px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--rosa-claro); overflow: hidden; }
+        .dropdown {
+            pointer-events: auto; /* ...EXCEPTO al botón mismo, que sí debe reaccionar */
+        }
+        
+        .dropbtn { 
+            background-color: white; 
+            color: var(--rosa-fuerte); 
+            padding: 10px 20px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            border: 2px solid var(--rosa-claro); 
+            border-radius: 25px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 10 rgba(0,0,0,0.05);
+        }
+        
+        .dropdown-content { 
+            display: none; 
+            position: absolute; 
+            right: 15px; 
+            top: 60px; 
+            background-color: white; 
+            min-width: 180px; 
+            border-radius: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            border: 2px solid var(--rosa-claro); 
+            overflow: hidden; 
+            z-index: 10001 !important; 
+        }
+        
         .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
-        .show { display: block; }
+        .show { display: block !important; }
 
         .quiz-card { background: white; padding: 35px 25px; border-radius: 40px; box-shadow: 0 15px 40px rgba(251,111,146,0.15); width: 100%; max-width: 400px; text-align: center; margin-top: 60px; border: 4px solid white; outline: 3px solid var(--rosa-claro); position: relative; }
         .timer-container { font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin-bottom: 10px; }
-        .timer-low { color: #e63946; animation: shake 0.5s infinite; }
-        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(2px); } 50% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
         .question-text { font-size: 1.2rem; font-weight: 700; color: var(--texto); margin-bottom: 25px; min-height: 60px; }
         .options-grid { display: grid; gap: 12px; }
         .option-btn { background: var(--fondo); border: 2px solid var(--rosa-claro); padding: 15px; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: 600; color: var(--texto); transition: 0.3s; font-size: 1rem; }
         
-        /* Modales con z-index alto pero menor que la navbar */
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 30px; z-index: 2000; width: 85%; max-width: 320px; text-align: center; border: 5px solid var(--rosa-claro); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; backdrop-filter: blur(4px); }
         
@@ -37,27 +72,12 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="dropdown">
-            <button onclick="document.getElementById('myDropdown').classList.toggle('show')" class="dropbtn">☰ Menú</button>
-            <div id="myDropdown" class="dropdown-content">
-                <a href="../index.html">🏠 Inicio</a>
-                <a href="jump.html">🏃 Snoopy Jump</a>
-                <a href="memorygame.html">🧩 Memoria</a>
-                <a href="djsnoopy.html">🎵 Dj Snoopy</a>
-                <a href="codigos.html">🏆 Mis Códigos</a>
-                <a onclick="rewardAttemptAdmin()">🎁 Recompensar Intento (Admin)</a>
-                <a onclick="resetQuestionsAdmin()">🧹 Reset Preguntas (Admin)</a>
-                <a onclick="resetDailyAdmin()">🔓 Reset Diario (Admin)</a>
-            </div>
-        </div>
-    </nav>
 
     <div id="intro-overlay" class="overlay" style="display: block;"></div>
     <div id="intro-modal" class="modal" style="display: block;">
         <img src="../assets/images/snoopy_pensando.png" alt="Snoopy Pensando" class="snoopy-thinking">
         <h2>Este es el Desafío Diario ✨</h2>
-        <p>¿Qué tan bien me y nos conocés? <br><br> • Hay 5 preguntas nuevas cada día.<br> • Las que respondas bien, no vuelven a salir, pero las que respondas mal, pueden volver a salir otro día.<br> • Si respondes las 5 bien de seguido, te doy un código.<br> • Si fallas una sola, tenés que esperar hasta el día siguiente.<br> • Tenes 30 segundos para responder cada una.</p>
+        <p>¿Qué tan bien nos conocés? <br><br> • 5 preguntas nuevas cada día.<br> • Si fallas una, volvés mañana.<br> • Respondé todas bien y llevate un código.</p>
         <button class="btn" onclick="startGame()">EMPEZAR AHORA</button>
     </div>
 
@@ -75,6 +95,22 @@
         <div id="codigo-box" style="display:none; font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin: 15px 0; background: var(--fondo); padding: 10px; border-radius: 10px;"></div>
         <button class="btn" onclick="location.href='../index.html'">Volver</button>
     </div>
+
+    <nav class="navbar">
+        <div class="dropdown">
+            <button onclick="toggleMenu(event)" class="dropbtn">☰ Menú</button>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="../index.html">🏠 Inicio</a>
+                <a href="jump.html">🏃 Snoopy Jump</a>
+                <a href="memorygame.html">🧩 Memoria</a>
+                <a href="djsnoopy.html">🎵 Dj Snoopy</a>
+                <a href="codigos.html">🏆 Mis Códigos</a>
+                <a onclick="rewardAttemptAdmin()">🎁 Recompensar Intento (Admin)</a>
+                <a onclick="resetQuestionsAdmin()">🧹 Reset Preguntas (Admin)</a>
+                <a onclick="resetDailyAdmin()">🔓 Reset Diario (Admin)</a>
+            </div>
+        </div>
+    </nav>
 
     <script>
         const POOL_PREGUNTAS = [
@@ -115,22 +151,22 @@
         function initQuiz() {
             const hoyArgentina = new Date().toLocaleDateString("es-AR", {timeZone: "America/Argentina/Buenos_Aires"});
             const lastDate = localStorage.getItem('quizLastDate');
-
             if (lastDate !== hoyArgentina) {
-                localStorage.removeItem('quizState');
-                localStorage.removeItem('quizDailySet');
-                localStorage.removeItem('quizCurrentIndex');
-                localStorage.setItem('quizLastDate', hoyArgentina);
+                localStorage.removeItem('quizState'); localStorage.removeItem('quizDailySet');
+                localStorage.removeItem('quizCurrentIndex'); localStorage.setItem('quizLastDate', hoyArgentina);
             }
-
             const state = localStorage.getItem('quizState');
             if (state === 'won' || state === 'failed' || state === 'in_progress') {
-                document.getElementById('intro-modal').style.display = 'none'; 
-                document.getElementById('intro-overlay').style.display = 'none';
-                if(state === 'won') showModal("Ya sacaste tu código diario 🌟", "Volvé mañana para más preguntas.");
-                else if(state === 'in_progress') failGame("Abandonaste el desafío anterior...");
+                document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none';
+                if(state === 'won') showModal("Ya sacaste tu código diario 🌟", "Volvé mañana.");
+                else if(state === 'in_progress') failGame("Abandonaste el desafío...");
                 else showModal("Día bloqueado ❌", "Intentá de nuevo mañana.");
             }
+        }
+
+        function toggleMenu(e) {
+            e.stopPropagation();
+            document.getElementById("myDropdown").classList.toggle('show');
         }
 
         function startGame() {
@@ -144,25 +180,30 @@
             else { dailySet = pool.sort(() => 0.5 - Math.random()).slice(0, 5); localStorage.setItem('quizDailySet', JSON.stringify(dailySet)); currentIndex = 0; }
             renderQuestion();
         }
+
         function startTimer() {
-            clearInterval(timer); timeLeft = 30; const tDiv = document.getElementById('timer'); tDiv.classList.remove('timer-low'); tDiv.innerText = "30s";
-            timer = setInterval(() => { timeLeft--; tDiv.innerText = timeLeft + "s"; if (timeLeft <= 10) tDiv.classList.add('timer-low'); if (timeLeft <= 0) { clearInterval(timer); failGame("¡Tiempo agotado! ⏰"); } }, 1000);
+            clearInterval(timer); timeLeft = 30; document.getElementById('timer').innerText = "30s";
+            timer = setInterval(() => { timeLeft--; document.getElementById('timer').innerText = timeLeft + "s"; if (timeLeft <= 0) failGame("¡Tiempo agotado! ⏰"); }, 1000);
         }
+
         function renderQuestion() {
             startTimer(); const q = dailySet[currentIndex]; document.getElementById('q-text').innerText = q.q;
             const optDiv = document.getElementById('options'); optDiv.innerHTML = "";
             q.o.forEach((opt, i) => { const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = opt; btn.onclick = () => checkAnswer(i); optDiv.appendChild(btn); });
             const dots = document.querySelectorAll('.dot'); dots.forEach((d, i) => d.className = i < currentIndex ? 'dot active' : 'dot');
         }
+
         function checkAnswer(idx) {
             clearInterval(timer);
             if (idx === dailySet[currentIndex].a) {
                 let hist = JSON.parse(localStorage.getItem('quizCorrectasHistoricas')) || [];
-                if(!hist.includes(dailySet[currentIndex].id)) { hist.push(dailySet[currentIndex].id); localStorage.setItem('quizCorrectasHistoricas', JSON.stringify(hist)); }
+                if(!hist.includes(dailySet[currentIndex].id)) hist.push(dailySet[currentIndex].id);
+                localStorage.setItem('quizCorrectasHistoricas', JSON.stringify(hist));
                 currentIndex++; localStorage.setItem('quizCurrentIndex', currentIndex);
                 if (currentIndex === 5) winGame(); else renderQuestion();
-            } else { failGame("Respuesta incorrecta, me rompiste el corazón💔"); }
+            } else { failGame("Respuesta incorrecta 💔"); }
         }
+
         function winGame() {
             localStorage.setItem('quizState', 'won');
             let cons = JSON.parse(localStorage.getItem('codigosConseguidos')) || [];
@@ -170,30 +211,17 @@
             let premio = disp.length > 0 ? disp[Math.floor(Math.random()*disp.length)] : "CAMPEONA";
             if(disp.length > 0) { cons.push(premio); localStorage.setItem('codigosConseguidos', JSON.stringify(cons)); }
             document.getElementById('codigo-box').innerText = premio.toUpperCase(); document.getElementById('codigo-box').style.display = 'block';
-            showModal("¡PERFECTO! 🏆", "Ganaste el código de hoy:");
+            showModal("¡PERFECTO! 🏆", "Ganaste el código:");
         }
-        function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg + " Mañana volvés a intentar."); }
-        
+
+        function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg); }
         function showModal(title, msg) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; document.getElementById('overlay').style.display = 'block'; document.getElementById('status-modal').style.display = 'block'; }
         
-        function rewardAttemptAdmin() {
-            if(prompt("Pass Admin:") === "ivancito") {
-                localStorage.removeItem('quizState');
-                localStorage.removeItem('quizDailySet');
-                localStorage.removeItem('quizCurrentIndex');
-                location.reload();
-            }
-        }
+        function rewardAttemptAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizState'); localStorage.removeItem('quizDailySet'); localStorage.removeItem('quizCurrentIndex'); location.reload(); } }
         function resetQuestionsAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizCorrectasHistoricas'); location.reload(); } }
         function resetDailyAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizLastDate'); localStorage.removeItem('quizState'); location.reload(); } }
         
-        window.onclick = e => { 
-            if (e.target.matches('.dropbtn')) {
-                document.getElementById("myDropdown").classList.toggle('show');
-            } else {
-                document.getElementById("myDropdown").classList.remove('show');
-            }
-        }
+        window.onclick = () => document.getElementById("myDropdown").classList.remove('show');
         initQuiz();
     </script>
 </body>
