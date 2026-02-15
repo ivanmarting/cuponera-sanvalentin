@@ -98,19 +98,31 @@
             { id: 29, q: "¿En qué brazo tengo una cicatriz?", o: ["Izquierdo", "Derecho", "Ninguno"], a: 2 },
             { id: 30, q: "¿De qué marca es el auto de mi papá?", o: ["Peugeot", "Chevrolet", "Volkwswagen", "Toyota"], a: 3 }
         ];
-        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "snoopy", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
+        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "woodstuck", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
         let dailySet = [], currentIndex = 0, timer, timeLeft = 30;
+
         function initQuiz() {
-            const lastDate = localStorage.getItem('quizLastDate'); const now = new Date().toLocaleDateString();
-            if (lastDate !== now) { localStorage.removeItem('quizState'); localStorage.removeItem('quizDailySet'); localStorage.removeItem('quizCurrentIndex'); localStorage.setItem('quizLastDate', now); }
+            // LÓGICA DE DÍA CALENDARIO (ARGENTINA 00:00)
+            const hoyArgentina = new Date().toLocaleDateString("es-AR", {timeZone: "America/Argentina/Buenos_Aires"});
+            const lastDate = localStorage.getItem('quizLastDate');
+
+            if (lastDate !== hoyArgentina) {
+                localStorage.removeItem('quizState');
+                localStorage.removeItem('quizDailySet');
+                localStorage.removeItem('quizCurrentIndex');
+                localStorage.setItem('quizLastDate', hoyArgentina);
+            }
+
             const state = localStorage.getItem('quizState');
             if (state === 'won' || state === 'failed' || state === 'in_progress') {
-                document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none';
-                if(state === 'won') showModal("Ya sacaste tu código diario 🌟", "Volvé mañana para más.");
+                document.getElementById('intro-modal').style.display = 'none'; 
+                document.getElementById('intro-overlay').style.display = 'none';
+                if(state === 'won') showModal("Ya sacaste tu código diario 🌟", "Volvé mañana para más preguntas.");
                 else if(state === 'in_progress') failGame("Abandonaste el desafío anterior...");
                 else showModal("Día bloqueado ❌", "Intentá de nuevo mañana.");
             }
         }
+
         function startGame() {
             localStorage.setItem('quizState', 'in_progress');
             const hist = JSON.parse(localStorage.getItem('quizCorrectasHistoricas')) || [];
@@ -139,7 +151,7 @@
                 if(!hist.includes(dailySet[currentIndex].id)) { hist.push(dailySet[currentIndex].id); localStorage.setItem('quizCorrectasHistoricas', JSON.stringify(hist)); }
                 currentIndex++; localStorage.setItem('quizCurrentIndex', currentIndex);
                 if (currentIndex === 5) winGame(); else renderQuestion();
-            } else { failGame("Incorrecto 💔"); }
+            } else { failGame("Respuesta incorrecta, me rompiste el corazón💔"); }
         }
         function winGame() {
             localStorage.setItem('quizState', 'won');
@@ -148,7 +160,7 @@
             let premio = disp.length > 0 ? disp[Math.floor(Math.random()*disp.length)] : "CAMPEONA";
             if(disp.length > 0) { cons.push(premio); localStorage.setItem('codigosConseguidos', JSON.stringify(cons)); }
             document.getElementById('codigo-box').innerText = premio.toUpperCase(); document.getElementById('codigo-box').style.display = 'block';
-            showModal("¡PERFECTO! 🏆", "Tu código de hoy:");
+            showModal("¡PERFECTO! 🏆", "Ganaste el código de hoy:");
         }
         function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg + " Mañana volvés a intentar."); }
         function showModal(title, msg) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; document.getElementById('overlay').style.display = 'block'; document.getElementById('status-modal').style.display = 'block'; }

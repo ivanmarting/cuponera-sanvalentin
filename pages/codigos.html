@@ -6,20 +6,48 @@
     <title>Mis Códigos 🏆</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
-        :root { --rosa: #fb6f92; --claro: #ffc8dd; --texto: #8a5a6a; }
-        body { background-color: #fff0f5; font-family: 'Quicksand', sans-serif; padding: 20px; color: var(--texto); }
-        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
+        :root { --rosa: #fb6f92; --claro: #ffc8dd; --texto: #8a5a6a; --rosa-fondo: #fff0f5; }
+        body { background-color: var(--rosa-fondo); font-family: 'Quicksand', sans-serif; padding: 20px; color: var(--texto); }
+        
+        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; left: 0; }
         .dropbtn { background: white; color: var(--rosa); padding: 10px 20px; border-radius: 25px; border: 2px solid var(--claro); font-weight: bold; cursor: pointer; }
         .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background: white; border-radius: 20px; border: 2px solid var(--claro); overflow: hidden; }
         .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
         .show { display: block; }
-        .container { max-width: 400px; margin: 60px auto; background: white; padding: 25px; border-radius: 30px; border: 4px solid var(--claro); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        .container { max-width: 450px; margin: 60px auto; background: white; padding: 25px; border-radius: 30px; border: 4px solid var(--claro); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { text-align: left; color: var(--rosa); border-bottom: 2px solid var(--claro); padding: 10px; }
         td { padding: 12px 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        
         .status { font-weight: bold; padding: 4px 8px; border-radius: 10px; font-size: 0.75rem; }
         .pendiente { background: #fff3cd; color: #856404; }
         .canjeado { background: #d4edda; color: #155724; }
+
+        /* Botón de Cupones */
+        .btn-view-coupons { background: var(--rosa); color: white; border: none; padding: 12px; border-radius: 50px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; font-family: inherit; transition: 0.3s; }
+        .btn-view-coupons:active { transform: scale(0.95); }
+
+        /* Contenedor de Cupones */
+        #cupones-galeria { display: none; margin-top: 25px; }
+        
+        /* Estilo del Mini-Cupón (Copia visual del Canvas) */
+        .mini-cupon { 
+            background: white; 
+            border: 4px solid var(--rosa); 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            padding: 15px; 
+            position: relative; 
+            overflow: hidden;
+            background-image: radial-gradient(var(--rosa-fondo) 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+        .mini-cupon::after { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; border-top: 2px dashed var(--claro); transform: translateY(-50%); }
+        .cupon-label { color: var(--rosa); font-weight: bold; font-size: 0.7rem; margin-bottom: 5px; display: block; }
+        .cupon-vale { font-weight: 700; color: var(--texto); font-size: 1.1rem; text-align: center; display: block; margin: 10px 0; }
+        .cupon-footer { font-size: 0.65rem; color: var(--rosa); font-style: italic; text-align: right; margin-top: 15px; display: block; }
     </style>
 </head>
 <body>
@@ -35,23 +63,71 @@
             </div>
         </div>
     </nav>
+
     <div class="container">
-        <h2 style="text-align:center; color: var(--rosa);">🏆 Mis Códigos</h2>
+        <h2 style="text-align:center; color: var(--rosa); margin-bottom: 10px;">🏆 Mis Códigos</h2>
+        
         <table>
             <thead><tr><th>Código</th><th>Estado</th></tr></thead>
             <tbody id="lista"></tbody>
         </table>
+
+        <button class="btn-view-coupons" onclick="toggleCupones()">💌 Ver Mis Cupones</button>
+
+        <div id="cupones-galeria">
+            </div>
     </div>
+
     <script>
+        // Cargar Códigos
         const conseguidos = JSON.parse(localStorage.getItem('codigosConseguidos')) || [];
         const canjeados = JSON.parse(localStorage.getItem('codigosCanjeados')) || [];
         const tbody = document.getElementById('lista');
+
         conseguidos.forEach(c => {
             const isC = canjeados.includes(c);
             const row = document.createElement('tr');
             row.innerHTML = `<td><strong>${c.toUpperCase()}</strong></td><td><span class="status ${isC?'canjeado':'pendiente'}">${isC?'✅ CANJEADO':'⏳ PENDIENTE'}</span></td>`;
             tbody.appendChild(row);
         });
+
+        // Lógica de Cupones (Visualización de Vales usados)
+        function toggleCupones() {
+            const galeria = document.getElementById('cupones-galeria');
+            const btn = document.querySelector('.btn-view-coupons');
+            
+            if (galeria.style.display === 'block') {
+                galeria.style.display = 'none';
+                btn.innerText = "💌 Ver Mis Cupones";
+            } else {
+                galeria.style.display = 'block';
+                btn.innerText = "🔼 Ocultar Cupones";
+                cargarGaleria();
+            }
+        }
+
+        function cargarGaleria() {
+            const usados = JSON.parse(localStorage.getItem('cuponesUsados')) || [];
+            const galeria = document.getElementById('cupones-galeria');
+            galeria.innerHTML = ""; // Limpiar antes de cargar
+
+            if (usados.length === 0) {
+                galeria.innerHTML = "<p style='text-align:center; font-size:0.8rem; font-style:italic;'>Aún no has canjeado ningún código por un cupón físico. ❤️</p>";
+                return;
+            }
+
+            usados.forEach(vale => {
+                const card = document.createElement('div');
+                card.className = "mini-cupon";
+                card.innerHTML = `
+                    <span class="cupon-label">CUPÓN VÁLIDO POR...</span>
+                    <span class="cupon-vale">${vale}</span>
+                    <span class="cupon-footer">Canjeado con amor por Iván ❤️</span>
+                `;
+                galeria.appendChild(card);
+            });
+        }
+
         window.onclick = e => { if (!e.target.matches('.dropbtn')) document.getElementById("myDropdown").classList.remove('show'); }
     </script>
 </body>

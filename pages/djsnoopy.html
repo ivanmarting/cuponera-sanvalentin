@@ -109,12 +109,21 @@
         function initDJ() {
             const disc = localStorage.getItem('djDiscoveryDate'); const force = localStorage.getItem('djForceUnlock') === 'true'; const playDiv = document.getElementById('playlist');
             playDiv.innerHTML = ""; if (!disc) return; document.getElementById('discover-section').style.display = "none";
-            const diffTime = Math.abs(Date.now() - parseInt(disc));
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            // CAMBIO: Ahora es 1 canción por cada bloque de 24 horas (diffDays + 1)
-            const unlocked = force ? CANCIONES.length : diffDays + 1;
+
+            // LÓGICA DE DÍA CALENDARIO (ARGENTINA 00:00)
+            const ahora = new Date();
+            const hoyArgStr = ahora.toLocaleDateString("en-US", {timeZone: "America/Argentina/Buenos_Aires"});
+            const hoyArg = new Date(hoyArgStr);
+
+            const inicioDisc = new Date(parseInt(disc));
+            const inicioArgStr = inicioDisc.toLocaleDateString("en-US", {timeZone: "America/Argentina/Buenos_Aires"});
+            const inicioArg = new Date(inicioArgStr);
+
+            const diffDias = Math.round((hoyArg - inicioArg) / (1000 * 60 * 60 * 24));
+            const unlockedCount = force ? CANCIONES.length : diffDias + 1;
+
             CANCIONES.forEach((s, i) => {
-                const isU = i < unlocked; const item = document.createElement('div'); item.className = `song-item ${isU ? '' : 'locked'}`;
+                const isU = i < unlockedCount; const item = document.createElement('div'); item.className = `song-item ${isU ? '' : 'locked'}`;
                 item.innerHTML = `<div class="song-info"><div class="song-title">${isU ? s.titulo : "Bloqueada 🔒"}</div></div><div class="btn-group"><button class="info-btn" ${isU ? '' : 'disabled'} onclick="showInfo(${i})">❓</button><button class="play-btn" ${isU ? '' : 'disabled'} onclick="togglePlay(${i})">${currentPlayingIndex === i ? '⏸' : '▶️'}</button></div>`;
                 playDiv.appendChild(item);
             });
