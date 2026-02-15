@@ -39,6 +39,7 @@
                 <a href="memorygame.html">🧩 Memoria</a>
                 <a href="djsnoopy.html">🎵 Dj Snoopy</a>
                 <a href="codigos.html">🏆 Mis Códigos</a>
+                <a onclick="rewardAttemptAdmin()">🎁 Recompensar Intento (Admin)</a>
                 <a onclick="resetQuestionsAdmin()">🧹 Reset Preguntas (Admin)</a>
                 <a onclick="resetDailyAdmin()">🔓 Reset Diario (Admin)</a>
             </div>
@@ -95,14 +96,13 @@
             { id: 26, q: "¿Cuál de estas cosas guardo sin contexto en el cajon de mi mesita de luz?", o: ["Un Silbato", "Una Lija", "Una Toallita Femenina", "Todas"], a: 3 },
             { id: 27, q: "¿Cuantos Meses pasaron desde que hablamos hasta ser Novios?", o: ["5", "3", "6", "4"], a: 0},
             { id: 28, q: "¿De cuál de estos superhéroes no tengo juguete o peluche?", o: ["Capitana Marvel", "Batman", "Spider-Man", "Superman"], a: 3 },
-            { id: 29, q: "¿En qué brazo tengo una cicatriz?", o: ["Izquierdo", "Derecho", "Ninguno"], a: 2 },
+            { id: 29, q: "¿En qué brazo tengo una cicatriz?", o: ["Izquierdo", "Derecho", "Ninguno"], a: 1 },
             { id: 30, q: "¿De qué marca es el auto de mi papá?", o: ["Peugeot", "Chevrolet", "Volkwswagen", "Toyota"], a: 3 }
         ];
         const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "woodstuck", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
         let dailySet = [], currentIndex = 0, timer, timeLeft = 30;
 
         function initQuiz() {
-            // LÓGICA DE DÍA CALENDARIO (ARGENTINA 00:00)
             const hoyArgentina = new Date().toLocaleDateString("es-AR", {timeZone: "America/Argentina/Buenos_Aires"});
             const lastDate = localStorage.getItem('quizLastDate');
 
@@ -164,6 +164,17 @@
         }
         function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg + " Mañana volvés a intentar."); }
         function showModal(title, msg) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; document.getElementById('overlay').style.display = 'block'; document.getElementById('status-modal').style.display = 'block'; }
+        
+        // FUNCIÓN NUEVA: Recompensa un intento extra sin resetear la fecha del día
+        function rewardAttemptAdmin() {
+            if(prompt("Pass Admin:") === "ivancito") {
+                localStorage.removeItem('quizState');
+                localStorage.removeItem('quizDailySet');
+                localStorage.removeItem('quizCurrentIndex');
+                location.reload();
+            }
+        }
+
         function resetQuestionsAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizCorrectasHistoricas'); location.reload(); } }
         function resetDailyAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizLastDate'); localStorage.removeItem('quizState'); location.reload(); } }
         initQuiz();
