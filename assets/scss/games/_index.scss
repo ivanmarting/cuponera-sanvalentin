@@ -1,0 +1,91 @@
+// assets/scss/games/_index.scss
+body.index-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 15px;
+    background-image: radial-gradient($rosa-claro 0.8px, transparent 0.8px);
+    background-size: 24px 24px;
+}
+
+.main-card {
+    background: $blanco;
+    padding: 35px 25px;
+    border-radius: 45px;
+    box-shadow: 0 20px 50px rgba($rosa-fuerte, 0.2);
+    text-align: center;
+    border: 6px solid $blanco;
+    outline: 3px solid $rosa-claro;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+
+    .snoopy-header { width: 180px; height: auto; margin-bottom: 10px; }
+    h1 { color: $rosa-fuerte; font-size: 1.5rem; margin-bottom: 25px; }
+
+    input {
+        padding: 15px;
+        border: 3px solid $rosa-fondo;
+        background-color: $rosa-fondo;
+        border-radius: 20px;
+        width: 85%;
+        margin-bottom: 20px;
+        outline: none;
+        text-align: center;
+        font-size: 1.1rem;
+        color: $texto;
+        font-family: inherit;
+    }
+
+    .btn-validar {
+        background: linear-gradient(135deg, $rosa-medio, $rosa-fuerte);
+        color: $blanco;
+        border: none;
+        padding: 14px 40px;
+        border-radius: 50px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 85%;
+    }
+}
+
+#gift-area {
+    display: none;
+    margin-top: 30px;
+    
+    .envelope {
+        background: $rosa-fuerte;
+        padding: 25px;
+        border-radius: 25px;
+        color: $blanco;
+        font-size: 3rem;
+        cursor: pointer;
+        display: inline-block;
+        animation: float 3s infinite ease-in-out;
+    }
+}
+
+@keyframes float { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-10px); } 
+}
+
+#couponCanvas { width: 100%; border-radius: 15px; margin-top: 20px; display: none; }
+
+.action-btn {
+    display: none;
+    margin-top: 15px;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    width: 80%;
+    cursor: pointer;
+    font-family: inherit;
+    
+    &.btn-restart { background-color: $rosa-fuerte; color: $blanco; border: none; }
+    &.download-link { color: $rosa-fuerte; border: 2px solid $rosa-fuerte; background: $blanco; }
+}
+
+.status-msg { font-size: 0.85rem; margin-top: 20px; color: $texto; font-style: italic; }

@@ -1,0 +1,134 @@
+// assets/scss/_layout.scss
+
+// Importación de la fuente oficial
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+body {
+    background-color: $rosa-fondo;
+    font-family: 'Quicksand', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    // Quitamos el height global para que las listas largas puedan scrollear
+}
+
+/* --- FIX PARA PÁGINAS DE JUEGO (Full Screen) --- */
+// Esto solo se activará en el Food Truck y en el Jump
+.cooking-page, .jump-page {
+    height: 100vh; 
+    width: 100vw;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- NAVBAR CENTRALIZADA (Fix para móviles) --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+    box-sizing: border-box;
+    z-index: 10000 !important;
+    pointer-events: none; 
+
+    .dropdown {
+        pointer-events: auto; 
+        position: relative;
+    }
+}
+
+.dropbtn {
+    background-color: $blanco;
+    color: $rosa-fuerte;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: 2px solid $rosa-claro;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    font-family: 'Quicksand', sans-serif;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 55px;
+    background-color: $blanco;
+    min-width: 220px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    border: 2px solid $rosa-claro;
+    overflow: hidden;
+    z-index: 10001 !important;
+
+    a {
+        color: $texto;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $rosa-fondo;
+        }
+    }
+
+    &.show {
+        display: block !important;
+    }
+}
+
+/* --- MODALES Y OVERLAYS --- */
+.overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1500;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: $blanco;
+    padding: 30px;
+    border-radius: 30px;
+    z-index: 2000;
+    width: 85%;
+    max-width: 350px;
+    text-align: center;
+    border: 5px solid $rosa-claro;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+/* --- BOTÓN GLOBAL --- */
+.btn {
+    background-color: $rosa-fuerte !important;
+    color: $blanco !important;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    font-family: inherit;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s;
+
+    &:active {
+        transform: scale(0.95);
+    }
+}

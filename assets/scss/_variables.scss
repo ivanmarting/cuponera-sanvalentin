@@ -1,0 +1,16 @@
+// assets/scss/_variables.scss
+$rosa-fuerte: #fb6f92;
+$rosa-medio: #ff8fab;
+$rosa-claro: #ffc8dd;
+$rosa-fondo: #fff0f5;
+$asfalto: #4f5b66;
+$texto: #8a5a6a;
+$blanco: #ffffff;
+
+:root {
+    --rosa: #{$rosa-fuerte};
+    --claro: #{$rosa-claro};
+    --asfalto: #{$asfalto};
+    --rosa-fuerte: #{$rosa-fuerte};
+    --texto: #{$texto};
+}

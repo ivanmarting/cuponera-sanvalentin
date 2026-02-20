@@ -4,74 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Juego de Preguntas ✨</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
-        :root { --rosa-fuerte: #fb6f92; --rosa-claro: #ffc8dd; --texto: #8a5a6a; --fondo: #fff0f5; }
-        body { background-color: var(--fondo); font-family: 'Quicksand', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        
-        /* FIX DEFINITIVO PARA EL MENÚ */
-        .navbar { 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            display: flex; 
-            justify-content: flex-end; 
-            padding: 15px; 
-            box-sizing: border-box; 
-            z-index: 10000 !important; /* Por encima de todo */
-            pointer-events: none; /* Deja pasar los clics a lo que está abajo... */
-        }
-        
-        .dropdown {
-            pointer-events: auto; /* ...EXCEPTO al botón mismo, que sí debe reaccionar */
-        }
-        
-        .dropbtn { 
-            background-color: white; 
-            color: var(--rosa-fuerte); 
-            padding: 10px 20px; 
-            font-size: 1rem; 
-            font-weight: bold; 
-            border: 2px solid var(--rosa-claro); 
-            border-radius: 25px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 10 rgba(0,0,0,0.05);
-        }
-        
-        .dropdown-content { 
-            display: none; 
-            position: absolute; 
-            right: 15px; 
-            top: 60px; 
-            background-color: white; 
-            min-width: 180px; 
-            border-radius: 15px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-            border: 2px solid var(--rosa-claro); 
-            overflow: hidden; 
-            z-index: 10001 !important; 
-        }
-        
-        .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
-        .show { display: block !important; }
-
-        .quiz-card { background: white; padding: 35px 25px; border-radius: 40px; box-shadow: 0 15px 40px rgba(251,111,146,0.15); width: 100%; max-width: 400px; text-align: center; margin-top: 60px; border: 4px solid white; outline: 3px solid var(--rosa-claro); position: relative; }
-        .timer-container { font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin-bottom: 10px; }
-        .question-text { font-size: 1.2rem; font-weight: 700; color: var(--texto); margin-bottom: 25px; min-height: 60px; }
-        .options-grid { display: grid; gap: 12px; }
-        .option-btn { background: var(--fondo); border: 2px solid var(--rosa-claro); padding: 15px; border-radius: 20px; cursor: pointer; font-family: inherit; font-weight: 600; color: var(--texto); transition: 0.3s; font-size: 1rem; }
-        
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 30px; z-index: 2000; width: 85%; max-width: 320px; text-align: center; border: 5px solid var(--rosa-claro); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; backdrop-filter: blur(4px); }
-        
-        .btn { background: var(--rosa-fuerte); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; font-family: inherit; }
-        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #ddd; }
-        .dot.active { background: var(--rosa-fuerte); }
-        .snoopy-thinking { width: 120px; height: auto; margin-bottom: 15px; }
-    </style>
+    
+    <link rel="stylesheet" href="../assets/scss/main.css">
 </head>
-<body>
+<body class="quiz-page">
 
     <div id="intro-overlay" class="overlay" style="display: block;"></div>
     <div id="intro-modal" class="modal" style="display: block;">
@@ -81,7 +17,7 @@
         <button class="btn" onclick="startGame()">EMPEZAR AHORA</button>
     </div>
 
-    <div class="quiz-card" id="quiz-ui">
+    <div class="quiz-card">
         <div class="timer-container" id="timer">30s</div>
         <div class="progress-dots" id="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="question-text" id="q-text">Cargando...</div>
@@ -92,7 +28,7 @@
     <div id="status-modal" class="modal">
         <h2 id="modal-title"></h2>
         <p id="modal-msg"></p>
-        <div id="codigo-box" style="display:none; font-size: 1.5rem; font-weight: bold; color: var(--rosa-fuerte); margin: 15px 0; background: var(--fondo); padding: 10px; border-radius: 10px;"></div>
+        <div id="codigo-box" style="display:none; font-size: 1.5rem; font-weight: bold; color: #fb6f92; margin: 15px 0; background: #fff0f5; padding: 10px; border-radius: 10px;"></div>
         <button class="btn" onclick="location.href='../index.html'">Volver</button>
     </div>
 
@@ -103,6 +39,7 @@
                 <a href="../index.html">🏠 Inicio</a>
                 <a href="jump.html">🏃 Snoopy Jump</a>
                 <a href="memorygame.html">🧩 Memoria</a>
+                <a href="cooking_v2.html">👨‍🍳 Food Truck</a>
                 <a href="djsnoopy.html">🎵 Dj Snoopy</a>
                 <a href="codigos.html">🏆 Mis Códigos</a>
                 <a onclick="rewardAttemptAdmin()">🎁 Recompensar Intento (Admin)</a>
@@ -112,7 +49,9 @@
         </div>
     </nav>
 
+    <script src="../assets/js/main.js"></script>
     <script>
+        // --- MOTOR DEL JUEGO (Lógica exclusiva) ---
         const POOL_PREGUNTAS = [
             { id: 1, q: "¿Cuál es mi color favorito?", o: ["Azul", "Negro", "Verde", "Rojo"], a: 3 },
             { id: 2, q: "¿En qué ciudad nací?", o: ["Barranqueras", "Resistencia", "Corrientes", "Fontana"], a: 1 },
@@ -143,7 +82,17 @@
             { id: 27, q: "¿Cuantos Meses pasaron desde que hablamos hasta ser Novios?", o: ["5", "3", "6", "4"], a: 0},
             { id: 28, q: "¿De cuál de estos superhéroes no tengo juguete o peluche?", o: ["Capitana Marvel", "Batman", "Spider-Man", "Superman"], a: 3 },
             { id: 29, q: "¿En qué brazo tengo una cicatriz?", o: ["Izquierdo", "Derecho", "Ninguno"], a: 1 },
-            { id: 30, q: "¿De qué marca es el auto de mi papá?", o: ["Peugeot", "Chevrolet", "Volkwswagen", "Toyota"], a: 3 }
+            { id: 30, q: "¿De qué marca es el auto de mi papá?", o: ["Peugeot", "Chevrolet", "Volkwswagen", "Toyota"], a: 3 },
+            { id: 31, q: "¿De qué marca es mi Notebook?", o: ["HP", "Acer", "Lenovo", "Exo"], a: 2 },
+            { id: 32, q: "¿De cuales de estos equipos de Futbol NO tengo una camiseta?", o: ["AC Milan", "Barcelona", "River", "Argentina"], a: 1 },
+            { id: 33, q: "Cuantos ambientes tiene mi casa de adelante SIN contar cocina, pasillos, y la construcción?", o: ["4", "3", "6", "7"], a: 2 },
+            { id: 34, q: "¿Cuál es la verdura mágica que trajo un hada a tu casa?", o: ["Morrón", "Lechuga", "Tomate", "Cebolla"], a: 3 },
+            { id: 35, q: "¿Cuál de estos es mi DNI?", o: ["43616523", "43666199", "41252599", "44243376"], a: 0},
+            { id: 36, q: "¿En cuáles de estos lugares de yo NUNCA compré ropa?", o: ["Narrow", "Le Utte", "MacOwens", "Goodfla"], a: 3 },
+            { id: 37, q: "¿Cual es mi pizzería favorita de Resistencia?", o: ["Pizza Pietra", "Los Campeones", "Pizza Pueblo", "La Isla"], a: 1 },
+            { id: 38, q: "¿Cuál fue el primer familiar tuyo que conocí formalmente?", o: ["Abuela", "Tía Laura", "Tía Mari", "Hermana"], a: 3 },
+            { id: 37, q: "¿Con qué me intoxiqué cuando era chico?", o: ["Pizza", "Chocolates", "Helado", "Bife"], a: 1 },
+            { id: 38, q: "¿A cuál de estos lugares NUNCA viajé?", o: ["Brasil", "Misiones", "Salta", "Paraguay"], a: 3 }
         ];
         const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "woodstuck", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
         let dailySet = [], currentIndex = 0, timer, timeLeft = 30;
@@ -162,11 +111,6 @@
                 else if(state === 'in_progress') failGame("Abandonaste el desafío...");
                 else showModal("Día bloqueado ❌", "Intentá de nuevo mañana.");
             }
-        }
-
-        function toggleMenu(e) {
-            e.stopPropagation();
-            document.getElementById("myDropdown").classList.toggle('show');
         }
 
         function startGame() {
@@ -217,11 +161,6 @@
         function failGame(msg) { clearInterval(timer); localStorage.setItem('quizState', 'failed'); showModal("Muerte Súbita 💔", msg); }
         function showModal(title, msg) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; document.getElementById('overlay').style.display = 'block'; document.getElementById('status-modal').style.display = 'block'; }
         
-        function rewardAttemptAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizState'); localStorage.removeItem('quizDailySet'); localStorage.removeItem('quizCurrentIndex'); location.reload(); } }
-        function resetQuestionsAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizCorrectasHistoricas'); location.reload(); } }
-        function resetDailyAdmin() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('quizLastDate'); localStorage.removeItem('quizState'); location.reload(); } }
-        
-        window.onclick = () => document.getElementById("myDropdown").classList.remove('show');
         initQuiz();
     </script>
 </body>

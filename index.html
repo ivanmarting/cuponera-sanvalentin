@@ -3,33 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> CUPONERA ✨</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
-        :root { --rosa-fuerte: #fb6f92; --rosa-medio: #ff8fab; --rosa-claro: #ffc8dd; --rosa-fondo: #fff0f5; --texto: #8a5a6a; }
-        body { background-color: var(--rosa-fondo); font-family: 'Quicksand', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box; background-image: radial-gradient(var(--rosa-claro) 0.8px, transparent 0.8px); background-size: 24px 24px; }
-        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
-        .dropbtn { background-color: white; color: var(--rosa-fuerte); padding: 10px 20px; font-size: 1rem; font-weight: bold; border: 2px solid var(--rosa-claro); border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10px rgba(251,111,146,0.1); }
-        .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background-color: white; min-width: 200px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 20px; border: 2px solid var(--rosa-claro); overflow: hidden; }
-        .dropdown-content a { color: var(--texto); padding: 12px 16px; text-decoration: none; display: block; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
-        .dropdown-content a:hover { background-color: var(--rosa-fondo); }
-        .show { display: block; }
-        .main-card { background: white; padding: 35px 25px; border-radius: 45px; box-shadow: 0 20px 50px rgba(251, 111, 146, 0.2); text-align: center; border: 6px solid white; outline: 3px solid var(--rosa-claro); width: 100%; max-width: 420px; position: relative; }
-        .snoopy-header { width: 180px; height: auto; margin-bottom: 10px; }
-        h1 { color: var(--rosa-fuerte); font-size: 1.5rem; margin-bottom: 25px; }
-        input { padding: 15px; border: 3px solid var(--rosa-fondo); background-color: var(--rosa-fondo); border-radius: 20px; width: 85%; margin-bottom: 20px; outline: none; text-align: center; font-size: 1.1rem; color: var(--texto); font-family: inherit; }
-        .btn-validar { background: linear-gradient(135deg, var(--rosa-medio), var(--rosa-fuerte)); color: white; border: none; padding: 14px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 85%; }
-        #gift-area { display: none; margin-top: 30px; }
-        .envelope { background: var(--rosa-fuerte); padding: 25px; border-radius: 25px; color: white; font-size: 3rem; cursor: pointer; display: inline-block; animation: float 3s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        #couponCanvas { width: 100%; border-radius: 15px; margin-top: 20px; display: none; }
-        .action-btn { display: none; margin-top: 15px; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; width: 80%; cursor: pointer; font-family: inherit; }
-        .btn-restart { background-color: var(--rosa-fuerte); color: white; border: none; }
-        .download-link { color: var(--rosa-fuerte); border: 2px solid var(--rosa-fuerte); background: white; }
-        .status-msg { font-size: 0.85rem; margin-top: 20px; color: var(--texto); font-style: italic; }
-    </style>
+    <title>CUPONERA ✨</title>
+    
+    <link rel="stylesheet" href="assets/scss/main.css">
 </head>
-<body>
+<body class="index-page">
     <nav class="navbar">
         <div class="dropdown">
             <button onclick="toggleMenu()" class="dropbtn">☰ Menú</button>
@@ -37,6 +15,7 @@
                 <a href="pages/jump.html">🏃 Snoopy Jump</a>
                 <a href="pages/memorygame.html">🧩 Memoria</a>
                 <a href="pages/quizgame.html">🧠 Preguntados</a>
+                <a href="pages/cooking_v2.html">👨‍🍳 Food Truck</a>
                 <a href="pages/djsnoopy.html">🎵 Dj Snoopy</a>
                 <a href="pages/codigos.html">🏆 Mis Códigos</a>
                 <a onclick="resetApp()">🧹 Reset Total (Admin)</a>
@@ -61,8 +40,9 @@
         </div>
     </div>
 
+    <script src="assets/js/main.js"></script>
     <script>
-        const CLAVE_ADMIN = "ivancito";
+        // --- LÓGICA DE NEGOCIO (Exclusiva de esta página) ---
         const CODIGOS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "woodstuck", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"]; 
         const VALES = ["UNA COMIDA A ELECCIÓN", "UN REZO 🙏", "UNA HORA DE MIMOS", "PASAR UN DÍA DONDE QUIERAS", "ALGO DULCE", "DORMIR UNA SIESTA", "JIJIS", "UNA COCUCHA O UN JUGO", "NO DECIRTE QUE NO (12 HS)", "REUTILIZAR UN CUPÓN USADO", "UNAS MILANGAS NAPOLITANAS DE POLLO", "UNA PIZZA CASERA", "ELEGIR UNA PELÍCULA", "UNA CARTITA", "UN REGALO", "$4000", "UN ASADO", "UN DÍA EN LA PLAYA O EN LA PILETA", "GALLETITAS BLOCK", "UNA HAMBURGUESA", "HELADO", "IR A FOODIE", "CUMPLIR UN DESEO", "FLORES O PELUCHE" ];
 
@@ -70,9 +50,6 @@
         let canjeados = JSON.parse(localStorage.getItem('codigosCanjeados')) || [];
         let codigoActual = "";
 
-        function toggleMenu() { document.getElementById("myDropdown").classList.toggle("show"); }
-        window.onclick = e => { if (!e.target.matches('.dropbtn')) document.getElementById("myDropdown").classList.remove('show'); }
-        function resetApp() { if(prompt("Clave admin:") === CLAVE_ADMIN) { localStorage.clear(); location.reload(); } }
         function actualizarEstado() {
             const restantes = VALES.length - usados.length;
             document.getElementById('counter').textContent = restantes === 0 ? "Todo canjeado ❤️" : `Quedan ${restantes} cupones.`;

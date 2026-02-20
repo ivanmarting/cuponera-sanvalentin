@@ -1,0 +1,121 @@
+// assets/scss/games/_djsnoopy.scss
+
+.dj-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+
+    .dj-card {
+        background: $blanco;
+        padding: 0;
+        border-radius: 40px;
+        box-shadow: 0 15px 40px rgba($rosa-fuerte, 0.15);
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+        margin-top: 60px;
+        border: 4px solid $blanco;
+        outline: 3px solid $rosa-claro;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        max-height: 85vh;
+    }
+
+    .dj-header {
+        padding: 30px 30px 10px 30px;
+        background: $blanco;
+        z-index: 20;
+        position: relative;
+        border-bottom: 2px solid $rosa-fondo;
+    }
+
+    .snoopy-box {
+        position: relative;
+        width: 100%;
+        height: 180px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fafafa;
+        border-radius: 25px;
+
+        #snoopy-dj-static { width: 160px; height: auto; transition: 0.3s; }
+        #snoopy-dancer-gif { position: absolute; width: 140px; height: auto; display: none; }
+    }
+
+    // Animación cuando suena la música
+    &.is-playing {
+        #snoopy-dancer-gif { 
+            display: block; 
+            animation: dance-side-to-side 4s linear infinite; 
+        }
+        #snoopy-dj-static { display: none; }
+    }
+
+    .scrollable-playlist {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 0 30px 30px 30px;
+    }
+
+    .song-item {
+        background: $rosa-fondo;
+        margin-bottom: 10px;
+        padding: 15px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+
+        &.locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+            border: 2px dashed #ccc;
+        }
+
+        .song-info {
+            flex-grow: 1;
+            text-align: left;
+            .song-title { font-weight: bold; color: $texto; font-size: 0.9rem; }
+        }
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 8px;
+        
+        .play-btn, .info-btn {
+            background: $rosa-fuerte;
+            color: $blanco;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-btn {
+            background: $blanco;
+            color: $rosa-fuerte;
+            border: 2px solid $rosa-claro;
+        }
+    }
+}
+
+@keyframes dance-side-to-side {
+    0% { transform: translateX(-40%); }
+    50% { transform: translateX(40%); }
+    100% { transform: translateX(-40%); }
+}

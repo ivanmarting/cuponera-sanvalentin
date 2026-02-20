@@ -1,0 +1,1765 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap");
+:root {
+  --rosa: #fb6f92;
+  --claro: #ffc8dd;
+  --asfalto: #4f5b66;
+  --rosa-fuerte: #fb6f92;
+  --texto: #8a5a6a;
+}
+
+body {
+  background-color: #fff0f5;
+  font-family: "Quicksand", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- FIX PARA PÁGINAS DE JUEGO (Full Screen) --- */
+.cooking-page, .jump-page {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- NAVBAR CENTRALIZADA (Fix para móviles) --- */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px;
+  box-sizing: border-box;
+  z-index: 10000 !important;
+  pointer-events: none;
+}
+.navbar .dropdown {
+  pointer-events: auto;
+  position: relative;
+}
+
+.dropbtn {
+  background-color: #ffffff;
+  color: #fb6f92;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 2px solid #ffc8dd;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  font-family: "Quicksand", sans-serif;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background-color: #ffffff;
+  min-width: 220px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  border: 2px solid #ffc8dd;
+  overflow: hidden;
+  z-index: 10001 !important;
+}
+.dropdown-content a {
+  color: #8a5a6a;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.dropdown-content a:hover {
+  background-color: #fff0f5;
+}
+.dropdown-content.show {
+  display: block !important;
+}
+
+/* --- MODALES Y OVERLAYS --- */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1500;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 30px;
+  z-index: 2000;
+  width: 85%;
+  max-width: 350px;
+  text-align: center;
+  border: 5px solid #ffc8dd;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+/* --- BOTÓN GLOBAL --- */
+.btn {
+  background-color: #fb6f92 !important;
+  color: #ffffff !important;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.btn:active {
+  transform: scale(0.95);
+}
+
+body.index-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 15px;
+  background-image: radial-gradient(#ffc8dd 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
+}
+
+.main-card {
+  background: #ffffff;
+  padding: 35px 25px;
+  border-radius: 45px;
+  box-shadow: 0 20px 50px rgba(251, 111, 146, 0.2);
+  text-align: center;
+  border: 6px solid #ffffff;
+  outline: 3px solid #ffc8dd;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+}
+.main-card .snoopy-header {
+  width: 180px;
+  height: auto;
+  margin-bottom: 10px;
+}
+.main-card h1 {
+  color: #fb6f92;
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+}
+.main-card input {
+  padding: 15px;
+  border: 3px solid #fff0f5;
+  background-color: #fff0f5;
+  border-radius: 20px;
+  width: 85%;
+  margin-bottom: 20px;
+  outline: none;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #8a5a6a;
+  font-family: inherit;
+}
+.main-card .btn-validar {
+  background: linear-gradient(135deg, #ff8fab, #fb6f92);
+  color: #ffffff;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 85%;
+}
+
+#gift-area {
+  display: none;
+  margin-top: 30px;
+}
+#gift-area .envelope {
+  background: #fb6f92;
+  padding: 25px;
+  border-radius: 25px;
+  color: #ffffff;
+  font-size: 3rem;
+  cursor: pointer;
+  display: inline-block;
+  animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+#couponCanvas {
+  width: 100%;
+  border-radius: 15px;
+  margin-top: 20px;
+  display: none;
+}
+
+.action-btn {
+  display: none;
+  margin-top: 15px;
+  padding: 12px 25px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  width: 80%;
+  cursor: pointer;
+  font-family: inherit;
+}
+.action-btn.btn-restart {
+  background-color: #fb6f92;
+  color: #ffffff;
+  border: none;
+}
+.action-btn.download-link {
+  color: #fb6f92;
+  border: 2px solid #fb6f92;
+  background: #ffffff;
+}
+
+.status-msg {
+  font-size: 0.85rem;
+  margin-top: 20px;
+  color: #8a5a6a;
+  font-style: italic;
+}
+
+.quiz-page {
+  background-color: #fff0f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.quiz-page .quiz-card {
+  background: #ffffff;
+  padding: 35px 25px;
+  border-radius: 40px;
+  box-shadow: 0 15px 40px rgba(251, 111, 146, 0.15);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin-top: 60px;
+  border: 4px solid #ffffff;
+  outline: 3px solid #ffc8dd;
+  position: relative;
+}
+.quiz-page .timer-container {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fb6f92;
+  margin-bottom: 10px;
+}
+.quiz-page .timer-container.timer-low {
+  color: #e63946;
+  animation: shake 0.5s infinite;
+}
+.quiz-page .question-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #8a5a6a;
+  margin-bottom: 25px;
+  min-height: 60px;
+}
+.quiz-page .options-grid {
+  display: grid;
+  gap: 12px;
+}
+.quiz-page .options-grid .option-btn {
+  background: #fff0f5;
+  border: 2px solid #ffc8dd;
+  padding: 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: "Quicksand", sans-serif;
+  font-weight: 700;
+  color: #8a5a6a;
+  transition: 0.3s;
+  font-size: 1rem;
+}
+.quiz-page .options-grid .option-btn:hover {
+  background-color: #ffc8dd;
+}
+.quiz-page .progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.quiz-page .progress-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+}
+.quiz-page .progress-dots .dot.active {
+  background: #fb6f92;
+}
+.quiz-page .snoopy-thinking {
+  width: 120px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(2px);
+  }
+  50% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.jump-page {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  position: relative;
+}
+@media (orientation: portrait) {
+  .jump-page::before {
+    content: "¡Girá tu celular! 🔄🛹";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #222;
+    color: white;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}
+.jump-page #fullscreen-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #000;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 1001;
+}
+.jump-page #mute-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: white;
+  border: 2px solid #fb6f92;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #fb6f92;
+  z-index: 1001;
+}
+.jump-page #game-ui {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: 15px;
+  pointer-events: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+}
+.jump-page #game-ui .score {
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+}
+.jump-page .mobile-controls {
+  position: fixed;
+  bottom: 8%;
+  width: 100%;
+  display: none;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-sizing: border-box;
+  z-index: 1000;
+  pointer-events: none;
+}
+.jump-page .mobile-controls .control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  pointer-events: none;
+}
+.jump-page .mobile-controls .control-btn {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 0.7rem;
+  backdrop-filter: blur(4px);
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.jump-page .mobile-controls .control-btn:active {
+  background: rgba(251, 111, 146, 0.7);
+  transform: scale(0.9);
+}
+.jump-page canvas {
+  display: block;
+  background: transparent;
+}
+.jump-page .modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  z-index: 2000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  width: 75%;
+  max-width: 420px;
+}
+.jump-page .modal h2 {
+  margin-top: 0;
+  color: #fb6f92;
+}
+.jump-page .modal .btn {
+  background: #fb6f92;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.jump-page .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1500;
+  display: none;
+}
+
+.dj-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+}
+.dj-page .dj-card {
+  background: #ffffff;
+  padding: 0;
+  border-radius: 40px;
+  box-shadow: 0 15px 40px rgba(251, 111, 146, 0.15);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  margin-top: 60px;
+  border: 4px solid #ffffff;
+  outline: 3px solid #ffc8dd;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+}
+.dj-page .dj-header {
+  padding: 30px 30px 10px 30px;
+  background: #ffffff;
+  z-index: 20;
+  position: relative;
+  border-bottom: 2px solid #fff0f5;
+}
+.dj-page .snoopy-box {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fafafa;
+  border-radius: 25px;
+}
+.dj-page .snoopy-box #snoopy-dj-static {
+  width: 160px;
+  height: auto;
+  transition: 0.3s;
+}
+.dj-page .snoopy-box #snoopy-dancer-gif {
+  position: absolute;
+  width: 140px;
+  height: auto;
+  display: none;
+}
+.dj-page.is-playing #snoopy-dancer-gif {
+  display: block;
+  animation: dance-side-to-side 4s linear infinite;
+}
+.dj-page.is-playing #snoopy-dj-static {
+  display: none;
+}
+.dj-page .scrollable-playlist {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 30px 30px 30px;
+}
+.dj-page .song-item {
+  background: #fff0f5;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s;
+}
+.dj-page .song-item.locked {
+  opacity: 0.5;
+  filter: grayscale(1);
+  border: 2px dashed #ccc;
+}
+.dj-page .song-item .song-info {
+  flex-grow: 1;
+  text-align: left;
+}
+.dj-page .song-item .song-info .song-title {
+  font-weight: bold;
+  color: #8a5a6a;
+  font-size: 0.9rem;
+}
+.dj-page .btn-group {
+  display: flex;
+  gap: 8px;
+}
+.dj-page .btn-group .play-btn, .dj-page .btn-group .info-btn {
+  background: #fb6f92;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dj-page .btn-group .info-btn {
+  background: #ffffff;
+  color: #fb6f92;
+  border: 2px solid #ffc8dd;
+}
+
+@keyframes dance-side-to-side {
+  0% {
+    transform: translateX(-40%);
+  }
+  50% {
+    transform: translateX(40%);
+  }
+  100% {
+    transform: translateX(-40%);
+  }
+}
+.codigos-page {
+  padding: 20px;
+  color: #8a5a6a;
+}
+.codigos-page .container {
+  max-width: 450px;
+  margin: 60px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 30px;
+  border: 4px solid #ffc8dd;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+.codigos-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.codigos-page table th {
+  text-align: left;
+  color: #fb6f92;
+  border-bottom: 2px solid #ffc8dd;
+  padding: 10px;
+}
+.codigos-page table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+.codigos-page .status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+.codigos-page .status.pendiente {
+  background: #fff3cd;
+  color: #856404;
+}
+.codigos-page .status.canjeado {
+  background: #d4edda;
+  color: #155724;
+}
+.codigos-page #cupones-galeria {
+  display: none;
+  margin-top: 25px;
+}
+.codigos-page .mini-cupon {
+  background: #ffffff;
+  border: 4px solid #fb6f92;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  padding: 15px;
+  position: relative;
+  overflow: hidden;
+  background-image: radial-gradient(#fff0f5 2px, transparent 2px);
+  background-size: 20px 20px;
+}
+.codigos-page .mini-cupon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-top: 2px dashed #ffc8dd;
+  transform: translateY(-50%);
+}
+.codigos-page .mini-cupon .cupon-label {
+  color: #fb6f92;
+  font-weight: bold;
+  font-size: 0.7rem;
+  margin-bottom: 5px;
+  display: block;
+}
+.codigos-page .mini-cupon .cupon-vale {
+  font-weight: 700;
+  color: #8a5a6a;
+  font-size: 1.1rem;
+  text-align: center;
+  display: block;
+  margin: 10px 0;
+}
+.codigos-page .mini-cupon .cupon-footer {
+  font-size: 0.65rem;
+  color: #fb6f92;
+  font-style: italic;
+  text-align: right;
+  margin-top: 15px;
+  display: block;
+}
+
+.memory-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.memory-page .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+.memory-page .header-container .snoopy-header {
+  width: 120px;
+  height: auto;
+}
+.memory-page .game-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 95%;
+  max-width: 400px;
+}
+.memory-page .card {
+  aspect-ratio: 1/1;
+  background-color: #fb6f92;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: transparent;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 3px solid #ffffff;
+}
+.memory-page .card.flipped {
+  background-color: #ffffff;
+  color: initial;
+  transform: rotateY(180deg);
+  border: 3px solid #ffc8dd;
+}
+.memory-page .card.matched {
+  visibility: hidden;
+}
+.memory-page #codigo-memory {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fb6f92;
+  margin: 15px 0;
+  background: #fff0f5;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.cooking-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #87CEEB;
+  /* --- VISTA EXTERIOR --- */
+}
+.cooking-page .window-view {
+  flex: 0.8;
+  background: linear-gradient(to bottom, #87CEEB, #e0f7fa);
+  border-bottom: 12px solid #444;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+}
+.cooking-page .window-view .customer-spot {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.cooking-page .window-view .customer-spot .character-img {
+  height: 35vh;
+  width: auto;
+}
+.cooking-page .window-view .customer-spot .speech-bubble {
+  background: white;
+  border: 3px solid #fb6f92;
+  border-radius: 15px;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+.cooking-page .kitchen-counter {
+  flex: 2;
+  background: linear-gradient(to bottom, #d1d1d1, #a1a1a1);
+  display: grid;
+  grid-template-columns: 100px 1fr 180px 70px;
+  grid-template-rows: 1fr 1fr;
+  gap: 15px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.cooking-page .station {
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid #888;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.cooking-page .station::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -8px;
+  background: #333;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: bold;
+  z-index: 50;
+}
+.cooking-page .station.pantry {
+  grid-row: 1/3;
+  grid-column: 1;
+  flex-direction: column;
+  gap: 10px;
+}
+.cooking-page .station.grill {
+  grid-row: 1;
+  grid-column: 2;
+  background: #222;
+  border: 4px solid #444;
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 15%, #111 15%, #111 17%);
+  box-shadow: inset 0 0 20px rgba(255, 69, 0, 0.4);
+  gap: 10px;
+}
+.cooking-page .station.cut-station {
+  grid-row: 2;
+  grid-column: 2;
+  background: #eee;
+  border: 3px solid #ccc;
+  gap: 15px;
+}
+.cooking-page .station.plate {
+  grid-row: 1/3;
+  grid-column: 3;
+  background: radial-gradient(circle, #fff 60%, #ddd 100%);
+  border-radius: 50%;
+  border: 6px solid #ccc;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+}
+.cooking-page .station.trash {
+  grid-row: 1/3;
+  grid-column: 4;
+  background: #c0392b;
+  border-radius: 10px;
+  font-size: 1.5rem;
+}
+.cooking-page {
+  /* --- INGREDIENTES --- */
+}
+.cooking-page .ingredient {
+  cursor: grab;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid #222;
+  /* --- CARNE REALISTA (VISTA SUPERIOR) --- */
+}
+.cooking-page .ingredient[data-type=meat] {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0, 0, 0, 0.1) 6px, rgba(0, 0, 0, 0.1) 8px);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+.cooking-page .ingredient[data-type=meat][data-state=raw] {
+  background-color: #ff4d4d !important;
+}
+.cooking-page .ingredient[data-type=meat][data-state=cook-1] {
+  background-color: #d98e8e !important;
+}
+.cooking-page .ingredient[data-type=meat][data-state=cook-2] {
+  background-color: #a55233 !important;
+}
+.cooking-page .ingredient[data-type=meat][data-state=cook-3] {
+  background-color: #5a2d22 !important;
+}
+.cooking-page .ingredient[data-type=meat][data-state=burnt] {
+  background-color: #1a1a1a !important;
+  box-shadow: 0 0 10px black;
+}
+.cooking-page .ingredient {
+  /* --- TOMATE REALISTA --- */
+}
+.cooking-page .ingredient[data-type=whole-tomato] {
+  width: 45px;
+  height: 45px;
+  background: radial-gradient(circle at 30% 30%, #ff6347, #d32f2f);
+  border-radius: 50%;
+  border: 2px solid #b71c1c;
+}
+.cooking-page .ingredient[data-type=whole-tomato]::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 5px;
+  background: #2e7d32;
+  border-radius: 2px;
+}
+.cooking-page .ingredient {
+  /* --- PAN CON SÉSAMO --- */
+}
+.cooking-page .ingredient[data-type=whole-bread] {
+  width: 65px;
+  height: 45px;
+  background: #f4d03f;
+  border-radius: 20px;
+  border: 2px solid #d4ac0d;
+}
+.cooking-page .ingredient {
+  /* --- INGREDIENTES EN TABLA (CORTE) --- */
+}
+.cooking-page .ingredient[data-type=bread-bottom], .cooking-page .ingredient[data-type=bread-top] {
+  width: 65px;
+  height: 20px;
+  background-color: #f4d03f;
+  border: 2px solid #d4ac0d;
+  border-radius: 10px;
+}
+.cooking-page .ingredient[data-type=bread-top] {
+  height: 25px;
+  border-radius: 15px 15px 5px 5px;
+}
+.cooking-page .ingredient[data-type=tomato-slices] {
+  width: 50px;
+  height: 18px;
+  background-color: #ff6347;
+  border: 2px solid #d32f2f;
+  border-radius: 8px;
+  background-image: linear-gradient(90deg, transparent 30%, #222 30%, #222 33%, transparent 33%, transparent 63%, #222 63%, #222 66%, transparent 66%);
+}
+.cooking-page .ingredient {
+  /* --- 🔥 TRANSFORMACIÓN 2D (EN EL PLATO) - NO TOCAR LÓGICA DE APILAMIENTO 🔥 --- */
+}
+.cooking-page .ingredient.placed-item {
+  border: 3px solid #222 !important;
+  width: 100px !important;
+  pointer-events: none;
+}
+.cooking-page .ingredient.placed-item[data-type=bread-bottom] {
+  order: 1;
+  height: 35px;
+  border-radius: 5px 5px 25px 25px;
+  margin-top: 0;
+  background: #f4d03f;
+}
+.cooking-page .ingredient.placed-item[data-type=meat] {
+  order: 2;
+  height: 25px;
+  width: 92px !important;
+  background: #5a2d22;
+  border-radius: 12px;
+  margin-top: -15px !important;
+  background-image: none;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+}
+.cooking-page .ingredient.placed-item[data-type=tomato-slices] {
+  order: 3;
+  height: 12px;
+  width: 88px !important;
+  background: #ff6347;
+  border-radius: 7px;
+  margin-top: -8px !important;
+  background-image: none;
+}
+.cooking-page .ingredient.placed-item[data-type=bread-top] {
+  order: 4;
+  height: 45px;
+  border-radius: 35px 35px 5px 5px;
+  margin-top: -15px !important;
+  background: #f4d03f;
+  background-image: radial-gradient(circle, #e6be8a 2.5px, transparent 3px);
+  background-size: 15px 15px;
+}
+
+@keyframes sizzle {
+  0% {
+    transform: scale(1) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1.02) rotate(1deg);
+  }
+}
+.cooking-page-v2 {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  background: url("../images/kitchen_bg.png") no-repeat center center;
+  background-size: cover;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  transition: background 0.3s ease;
+}
+.cooking-page-v2.oven-on {
+  background-image: url("../images/kitchen_bg_oven_on.png");
+}
+@media (orientation: portrait) {
+  .cooking-page-v2::before {
+    content: "¡Girá tu celular para jugar! 🔄";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #222;
+    color: white;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}
+.cooking-page-v2 .glow-active {
+  box-shadow: 0 0 30px 15px rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+.cooking-page-v2 .station {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+.cooking-page-v2 {
+  /* --- UI: HUD SUPERIOR --- */
+}
+.cooking-page-v2 #fullscreen-btn, .cooking-page-v2 #recipe-btn, .cooking-page-v2 #reset-btn {
+  position: absolute;
+  top: 10px;
+  z-index: 200;
+  border: 2px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.1s;
+}
+.cooking-page-v2 #fullscreen-btn:active, .cooking-page-v2 #recipe-btn:active, .cooking-page-v2 #reset-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 #000;
+}
+.cooking-page-v2 #fullscreen-btn {
+  left: 10px;
+  background: rgba(255, 255, 255, 0.8);
+}
+.cooking-page-v2 #recipe-btn {
+  left: 130px;
+  background: #ffd166;
+}
+.cooking-page-v2 #reset-btn {
+  left: 220px;
+  background: #ef476f;
+  color: white;
+}
+.cooking-page-v2 .hud-bar {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 200;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 60%;
+}
+.cooking-page-v2 .hud-bar .hud-box {
+  background: white;
+  border: 3px solid #000;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  box-shadow: 2px 2px 0 #000;
+}
+.cooking-page-v2 .hud-bar .hud-box span {
+  color: #e63946;
+}
+.cooking-page-v2 .hud-bar .hud-box.stars-box {
+  color: #ffd166;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 2px;
+}
+.cooking-page-v2 .hud-bar .hud-box.strikes-box span {
+  color: #000;
+}
+.cooking-page-v2 {
+  /* --- MENÚ PRINCIPAL --- */
+}
+.cooking-page-v2 .main-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  background: url("../images/menu_bg.jpg") no-repeat bottom center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+.cooking-page-v2 .main-menu-overlay .title-logo {
+  max-width: 60%;
+  height: auto;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 5px 0 #1a3c5e);
+}
+.cooking-page-v2 .main-menu-overlay .menu-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+  border: 5px solid #1a3c5e;
+  border-radius: 40px;
+  padding: 12px 45px;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #1a3c5e;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 #ffffff, -2px -2px 0 #ffffff, 2px -2px 0 #ffffff, -2px 2px 0 #ffffff;
+  box-shadow: 0 8px 0 #112a45, 0 10px 15px rgba(0, 0, 0, 0.4);
+  transition: all 0.15s ease;
+}
+.cooking-page-v2 .main-menu-overlay .menu-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 0 #112a45, 0 12px 18px rgba(0, 0, 0, 0.3);
+}
+.cooking-page-v2 .main-menu-overlay .menu-btn:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 #112a45, 0 2px 5px rgba(0, 0, 0, 0.4);
+  filter: brightness(0.95);
+}
+.cooking-page-v2 {
+  /* --- PANTALLAS MODALES --- */
+}
+.cooking-page-v2 .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2500;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.cooking-page-v2 .modal-overlay .modal-content {
+  background: #fefae0;
+  border: 5px solid #bc6c25;
+  border-radius: 20px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 85%;
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+}
+.cooking-page-v2 .modal-overlay .modal-content h2 {
+  text-align: center;
+  color: #9e2a2b;
+  font-size: 2.5rem;
+  margin-top: 0;
+  border-bottom: 3px dashed #bc6c25;
+  padding-bottom: 10px;
+}
+.cooking-page-v2 .modal-overlay .modal-content .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: #e63946;
+  color: white;
+  border: 3px solid #000;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: all 0.1s;
+}
+.cooking-page-v2 .modal-overlay .modal-content .close-btn:active {
+  transform: scale(0.9);
+}
+.cooking-page-v2 .modal-overlay .modal-content .admin-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  opacity: 0.3;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 10;
+}
+.cooking-page-v2 .store-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+.cooking-page-v2 .store-grid .store-section {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid #bc6c25;
+}
+.cooking-page-v2 .store-grid .store-section h3 {
+  text-align: center;
+  color: #540b0e;
+}
+.cooking-page-v2 .store-grid .store-section .store-item {
+  background: white;
+  border: 2px dashed #e63946;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.cooking-page-v2 .store-grid .store-section .store-item button {
+  margin-top: 10px;
+  background: #06d6a0;
+  border: 2px solid #000;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.1s;
+}
+.cooking-page-v2 .store-grid .store-section .store-item button:active:not(:disabled) {
+  transform: translateY(2px);
+}
+.cooking-page-v2 .store-grid .store-section .store-item button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+.cooking-page-v2 .store-grid .store-section .store-item .action-btn {
+  background: #4cc9f0;
+  margin-left: 5px;
+}
+.cooking-page-v2 .store-grid .store-section .coupon-item {
+  border: 3px dashed #ffd166;
+  background: #fffcf2;
+}
+.cooking-page-v2 .achievements-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cooking-page-v2 .achievements-list li {
+  background: #eee;
+  border: 2px solid #ccc;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cooking-page-v2 .achievements-list li.unlocked {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+  box-shadow: inset 0 0 10px rgba(40, 167, 69, 0.3333333333);
+}
+.cooking-page-v2 #game-over-overlay .modal-content {
+  text-align: center;
+  background: #e63946;
+  color: white;
+  border-color: #fff;
+}
+.cooking-page-v2 #game-over-overlay .modal-content h2 {
+  color: white;
+  border-bottom-color: white;
+}
+.cooking-page-v2 {
+  /* --- ELEMENTOS DE JUEGO FÍSICO --- */
+}
+.cooking-page-v2 .window-view {
+  top: 5%;
+  left: 16%;
+  width: 55%;
+  height: 42%;
+  position: absolute;
+}
+.cooking-page-v2 .window-view .woodstock-speech-bubble {
+  position: absolute;
+  bottom: 12%;
+  right: 2%;
+  background: white;
+  border: 3px solid #000;
+  border-radius: 15px;
+  padding: 10px 15px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  z-index: 20;
+  max-width: 200px;
+  text-align: center;
+}
+.cooking-page-v2 .window-view .woodstock-speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  right: 25px;
+  border-width: 15px 15px 0 0;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+}
+.cooking-page-v2 .window-view .woodstock-speech-bubble::before {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  right: 27px;
+  border-width: 11px 11px 0 0;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+  z-index: 1;
+}
+.cooking-page-v2 .radio-toggle {
+  top: 36%;
+  left: 13%;
+  width: 10%;
+  height: 12%;
+  cursor: pointer;
+  z-index: 30;
+}
+.cooking-page-v2 .grill {
+  top: 48%;
+  left: 2%;
+  width: 32%;
+  height: 26%;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cooking-page-v2 .trash {
+  top: 81%;
+  left: 11%;
+  width: 12%;
+  height: 18%;
+  cursor: pointer;
+  z-index: 15;
+}
+.cooking-page-v2 .cut-station {
+  top: 52%;
+  left: 34%;
+  width: 22%;
+  height: 16%;
+  gap: 15px;
+}
+.cooking-page-v2 {
+  /* --- PLATO Y COMIDA --- */
+}
+.cooking-page-v2 .plate {
+  top: 50.5%;
+  left: 56.5%;
+  width: 19%;
+  height: 16%;
+}
+.cooking-page-v2 .plate #burger-instance {
+  width: 160px;
+  height: 130px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  cursor: grab;
+  transition: transform 0.2s ease;
+  transform: translateX(-12px);
+}
+.cooking-page-v2 .plate #burger-instance.is-burger {
+  margin-top: 10px;
+}
+.cooking-page-v2 .plate #burger-instance.is-pizza {
+  margin-top: 18px;
+}
+.cooking-page-v2 .oven-zone {
+  top: 38%;
+  left: 74%;
+  width: 24%;
+  height: 26%;
+}
+.cooking-page-v2 .oven-zone .baking-pizza-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 25px;
+}
+.cooking-page-v2 .oven-zone .baking-pizza-wrap .progress-container {
+  position: relative;
+  bottom: 0;
+  width: 70%;
+  z-index: 30;
+}
+.cooking-page-v2 .pizza-stack {
+  top: 76%;
+  left: 58%;
+  width: 17%;
+  height: 22%;
+  cursor: grab;
+}
+.cooking-page-v2 .cutlery-drawer {
+  top: 76%;
+  left: 30%;
+  width: 25%;
+  height: 18%;
+  display: flex;
+  gap: 35px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.cooking-page-v2 .cutlery-drawer .tool {
+  width: 65px;
+  height: 65px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.45);
+  border: 2px solid #5a3a22;
+  border-radius: 10px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.cooking-page-v2 .cutlery-drawer .tool.active {
+  border-color: #ffd166;
+  background-color: rgba(255, 209, 102, 0.5);
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.8);
+}
+.cooking-page-v2 .cutlery-drawer .tool#tool-knife {
+  background-image: url("../images/icon_knife.png");
+}
+.cooking-page-v2 .cutlery-drawer .tool#tool-spatula {
+  background-image: url("../images/icon_spatula.png");
+}
+.cooking-page-v2 .cutlery-drawer .tool#tool-peel {
+  background-image: url("../images/icon_peel.png");
+}
+.cooking-page-v2 .pantry-dry {
+  top: 2%;
+  left: 74%;
+  width: 22%;
+  height: 25%;
+  cursor: pointer;
+}
+.cooking-page-v2 .fridge {
+  top: 73%;
+  left: 80%;
+  width: 18%;
+  height: 25%;
+  cursor: pointer;
+}
+@keyframes sizzle-shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  25% {
+    transform: translate(-1px, -1px) rotate(-1deg);
+  }
+  50% {
+    transform: translate(1px, 1px) rotate(1deg);
+  }
+  75% {
+    transform: translate(1px, -1px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, 1px) rotate(-1deg);
+  }
+}
+.cooking-page-v2 .ingredient-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  width: -moz-max-content;
+  width: max-content;
+}
+.cooking-page-v2 .ingredient-wrapper.cutting {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+.cooking-page-v2 .ingredient-wrapper.sizzling img {
+  animation: sizzle-shake 0.15s infinite;
+}
+.cooking-page-v2 .ingredient-wrapper .progress-container {
+  position: absolute;
+  bottom: -10px;
+  width: 90%;
+  height: 8px;
+  background: #333;
+  border: 1px solid #000;
+  border-radius: 4px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 20;
+}
+.cooking-page-v2 .ingredient-wrapper .progress-container .progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #06d6a0;
+}
+.cooking-page-v2 .ingredient-wrapper .progress-container.meat-bar .progress-fill {
+  background: #ef476f;
+  transition: width 0.1s linear;
+}
+.cooking-page-v2 .ingredient-wrapper .progress-container.oven-bar .progress-fill {
+  background: #ffd166;
+  transition: width 0.1s linear;
+}
+.cooking-page-v2 .ingredient-wrapper .ingredient {
+  pointer-events: none;
+}
+.cooking-page-v2 .ingredient {
+  cursor: grab;
+  -o-object-fit: contain;
+     object-fit: contain;
+  position: relative;
+}
+.cooking-page-v2 .ingredient[data-type=meat] {
+  width: 110px;
+  height: 90px;
+}
+.cooking-page-v2 .ingredient[data-type=whole-bread] {
+  width: 120px;
+  height: 90px;
+}
+.cooking-page-v2 .ingredient[data-type=whole-tomato] {
+  width: 90px;
+  height: 90px;
+}
+.cooking-page-v2 .ingredient[data-type=whole-cheese] {
+  width: 130px;
+  height: 90px;
+}
+.cooking-page-v2 .ingredient[data-type=whole-lettuce] {
+  width: 110px;
+  height: 100px;
+}
+.cooking-page-v2 .ingredient[data-type=tomato-sauce-bottle] {
+  width: 60px;
+  height: 110px;
+}
+.cooking-page-v2 .ingredient[data-type=pizza-dough] {
+  width: 140px;
+  height: 50px;
+}
+.cooking-page-v2 .ingredient[data-type=bread-bottom], .cooking-page-v2 .ingredient[data-type=bread-top] {
+  width: 135px;
+  height: 60px;
+}
+.cooking-page-v2 .ingredient[data-type=tomato-slices], .cooking-page-v2 .ingredient[data-type=cheese-slices], .cooking-page-v2 .ingredient[data-type=lettuce-slices] {
+  width: 125px;
+}
+.cooking-page-v2 #warning-msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #e63946;
+  color: white;
+  padding: 15px 30px;
+  border: 4px solid #000;
+  border-radius: 15px;
+  font-weight: bold;
+  z-index: 500;
+  display: none;
+}
+.cooking-page-v2 .inventory-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.cooking-page-v2 .inventory-overlay.is-dragging {
+  pointer-events: none;
+  opacity: 0;
+}
+.cooking-page-v2 .inventory-overlay .inventory-menu {
+  background: #fefae0;
+  border: 4px solid #bc6c25;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  gap: 25px;
+  position: relative;
+}
+.cooking-page-v2 .inventory-overlay .inventory-menu .close-btn {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #e63946;
+  color: white;
+  border: 3px solid #000;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.cooking-page-v2 {
+  /* FIX MÓVIL RESPONSIVE */
+}
+@media (max-width: 950px) and (max-height: 500px) and (orientation: landscape) {
+  .cooking-page-v2 .main-menu-overlay {
+    gap: 12px;
+  }
+  .cooking-page-v2 .main-menu-overlay .title-logo {
+    max-width: 50%;
+    margin-bottom: 5px;
+  }
+  .cooking-page-v2 .main-menu-overlay .menu-btn {
+    padding: 8px 30px;
+    font-size: 1.2rem;
+    border-width: 4px;
+  }
+  .cooking-page-v2 .hud-bar {
+    top: 5px;
+    right: 5px;
+    gap: 5px;
+  }
+  .cooking-page-v2 .hud-bar .hud-box {
+    padding: 3px 8px;
+    font-size: 0.9rem;
+  }
+  .cooking-page-v2 #fullscreen-btn, .cooking-page-v2 #recipe-btn, .cooking-page-v2 #reset-btn {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+  }
+  .cooking-page-v2 #recipe-btn {
+    left: 95px;
+  }
+  .cooking-page-v2 #reset-btn {
+    left: 165px;
+  }
+  .cooking-page-v2 .ingredient[data-type=meat] {
+    width: 75px;
+    height: 60px;
+  }
+  .cooking-page-v2 .ingredient[data-type=whole-bread] {
+    width: 85px;
+    height: 65px;
+  }
+  .cooking-page-v2 .ingredient[data-type=whole-tomato] {
+    width: 65px;
+    height: 65px;
+  }
+  .cooking-page-v2 .ingredient[data-type=whole-cheese] {
+    width: 90px;
+    height: 65px;
+  }
+  .cooking-page-v2 .ingredient[data-type=whole-lettuce] {
+    width: 80px;
+    height: 75px;
+  }
+  .cooking-page-v2 .ingredient[data-type=tomato-sauce-bottle] {
+    width: 40px;
+    height: 80px;
+  }
+  .cooking-page-v2 .ingredient[data-type=pizza-dough] {
+    width: 100px;
+    height: 35px;
+  }
+  .cooking-page-v2 .ingredient[data-type=bread-bottom], .cooking-page-v2 .ingredient[data-type=bread-top] {
+    width: 95px;
+    height: 45px;
+  }
+  .cooking-page-v2 .ingredient[data-type=tomato-slices], .cooking-page-v2 .ingredient[data-type=cheese-slices], .cooking-page-v2 .ingredient[data-type=lettuce-slices] {
+    width: 90px;
+  }
+  .cooking-page-v2 .plate #burger-instance {
+    width: 95px;
+    height: 80px;
+    transform: translateX(-10px);
+  }
+  .cooking-page-v2 .plate #burger-instance.is-burger {
+    margin-top: 5px;
+  }
+  .cooking-page-v2 .plate #burger-instance.is-pizza {
+    margin-top: 8px;
+  }
+  .cooking-page-v2 .plate #burger-instance img {
+    width: 90px !important;
+  }
+  .cooking-page-v2 .cutlery-drawer {
+    gap: 15px;
+  }
+  .cooking-page-v2 .cutlery-drawer .tool {
+    width: 50px;
+    height: 50px;
+  }
+  .cooking-page-v2 .inventory-overlay {
+    align-items: flex-start;
+    padding-top: 2%;
+  }
+  .cooking-page-v2 .inventory-overlay .inventory-menu {
+    padding: 10px;
+    gap: 15px;
+  }
+  .cooking-page-v2 .inventory-overlay .inventory-menu .ingredient {
+    max-width: 60px;
+    max-height: 60px;
+  }
+  .cooking-page-v2 .window-view .woodstock-speech-bubble {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    bottom: 25%;
+    right: 6%;
+    max-width: 160px;
+  }
+  .cooking-page-v2 .modal-overlay .modal-content {
+    width: 95%;
+    padding: 10px;
+  }
+  .cooking-page-v2 .modal-overlay .modal-content h2 {
+    font-size: 1.5rem;
+  }
+}/*# sourceMappingURL=main.css.map */

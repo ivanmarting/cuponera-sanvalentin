@@ -4,76 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Memory Challenge ✨</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
-        :root { --rosa-fuerte: #fb6f92; --rosa-claro: #ffc8dd; --texto: #8a5a6a; }
-        body { background-color: #fff0f5; font-family: 'Quicksand', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding-top: 20px; box-sizing: border-box; }
-        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
-        .dropbtn { background-color: white; color: var(--rosa-fuerte); padding: 10px 20px; font-size: 1rem; font-weight: bold; border: 2px solid var(--rosa-claro); border-radius: 25px; cursor: pointer; }
-        .dropdown-content { display: none; position: absolute; right: 15px; top: 60px; background-color: white; min-width: 180px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--rosa-claro); overflow: hidden; }
-        .dropdown-content a { color: var(--texto); padding: 12px; text-decoration: none; display: block; font-weight: 600; cursor: pointer; }
-        .show { display: block; }
-        .header-container { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 40px; margin-bottom: 10px; }
-        .snoopy-header { width: 120px; height: auto; }
-        .snoopy-decor { width: 100px; height: auto; }
-        .game-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 95%; max-width: 400px; }
-        .card { aspect-ratio: 1/1; background-color: var(--rosa-fuerte); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: transparent; cursor: pointer; transition: 0.3s; border: 3px solid white; }
-        .card.flipped { background-color: white; color: initial; transform: rotateY(180deg); border: 3px solid var(--rosa-claro); }
-        .card.matched { visibility: hidden; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 30px; z-index: 2000; width: 85%; max-width: 350px; text-align: center; border: 5px solid var(--rosa-claro); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; backdrop-filter: blur(4px); }
-        .btn { background: var(--rosa-fuerte); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; font-family: inherit; }
-    </style>
+    <link rel="stylesheet" href="../assets/scss/main.css">
 </head>
-<body>
+<body class="memory-page">
     <nav class="navbar">
         <div class="dropdown">
-            <button onclick="document.getElementById('myDropdown').classList.toggle('show')" class="dropbtn">☰ Menú</button>
+            <button onclick="toggleMenu(event)" class="dropbtn">☰ Menú</button>
             <div id="myDropdown" class="dropdown-content">
                 <a href="../index.html">🏠 Inicio</a>
                 <a href="jump.html">🏃 Snoopy Jump</a>
                 <a href="quizgame.html">🧠 Preguntados</a>
+                <a href="cooking_v2.html">👨‍🍳 Food Truck</a>
                 <a href="djsnoopy.html">🎵 Dj Snoopy</a>
                 <a href="codigos.html">🏆 Mis Códigos</a>
-                <a onclick="resetTimer()">🔓 Reset Tiempo (Admin)</a>
+                <a onclick="resetTimerMemory()">🔓 Reset Tiempo (Admin)</a>
             </div>
         </div>
     </nav>
+
     <div class="header-container">
-        <img src="../assets/images/snoopy_detective.png" alt="Snoopy Index" class="snoopy-header">
+        <img src="../assets/images/snoopy_detective.png" alt="Snoopy Detective" class="snoopy-header">
     </div>
+
     <div id="intro-overlay" class="overlay" style="display: block;"></div>
     <div id="intro-modal" class="modal" style="display: block;">
-        <h2 style="color: var(--rosa-fuerte)">Desafío de Memoria ✨</h2>
+        <h2 style="color: #fb6f92">Desafío de Memoria ✨</h2>
         <p>Es el típico juego de encontrar el par de la figura.<br><br>Superá los 4 niveles.<br>Tenés tiempo y movimientos limitados.<br><b>Ojo:</b> Si abandonás, perdes o cerrás el juego una vez empezado, se bloqueará por 72 horas.</p>
         <button class="btn" onclick="startGame()">ACEPTO EL DESAFÍO</button>
     </div>
+
     <div id="game-view">
         <div style="text-align:center">
-            <h2 style="color: var(--rosa-fuerte)">Nivel <span id="level-txt">1</span>/4</h2>
+            <h2 style="color: #fb6f92">Nivel <span id="level-txt">1</span>/4</h2>
             <p>Tiempo: <span id="clock">00</span>s | Movs: <span id="moves">0</span>/<span id="move-limit">0</span></p>
         </div>
         <div class="game-grid" id="grid"></div>
     </div>
+
     <div id="lockout-screen" class="modal">
         <h2 id="lockout-title">Alto ahí, esperá un cachito ⏳</h2>
         <p id="lockout-msg">Ya jugaste hace nada morocha. Vuelve en 72 horas para otro código.</p>
         <button class="btn" onclick="location.href='../index.html'">Volver al Inicio</button>
     </div>
+
     <div class="overlay" id="overlay"></div>
-    <div class="modal" id="modal"><h2 id="modal-title"></h2><button class="btn" onclick="nextLevel()">Siguiente Nivel</button></div>
+    <div class="modal" id="modal">
+        <h2 id="modal-title"></h2>
+        <button class="btn" onclick="nextLevel()">Siguiente Nivel</button>
+    </div>
+
     <div id="win-screen" class="modal">
-        <h2 style="color: var(--rosa-fuerte)">EEEEEESAAAAAAA 🏆</h2>
+        <h2 style="color: #fb6f92">EEEEEESAAAAAAA 🏆</h2>
         <p>Tu código aleatorio es:</p>
-        <div id="codigo-memory" style="font-size: 1.8rem; font-weight: bold; color: var(--rosa-fuerte); margin: 15px 0; background: #fff0f5; padding: 10px; border-radius: 15px;">---</div>
+        <div id="codigo-memory">---</div>
         <button class="btn" onclick="finishGame()">Finalizar desafío</button>
     </div>
+
+    <script src="../assets/js/main.js"></script>
     <script>
+        // --- LÓGICA DEL MOTOR DE JUEGO (Inalterada) ---
         const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "woodstuck", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
         const icons = ['🍑', '🐊', '🐜', '❤️', '🐢', '🐥', '🌟', '🍕', '🍦', '🧸', '🎀', '🍭'];
         let level = 1, moves = 0, matchedPairs = 0, flippedCards = [], isLocking = false, timeLeft, timerInterval, currentMoveLimit;
-        function checkLockout() { const lw = localStorage.getItem('lastGameWin'); if(lw && Date.now() - lw < 72*60*60*1000) { document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none'; document.getElementById('game-view').style.display = 'none'; document.getElementById('lockout-screen').style.display = 'block'; return true; } return false; }
-        function startGame() { if(localStorage.getItem('memoryInProgress') === 'true') { failCheat("Abandonaste la partida anterior"); return; } document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none'; localStorage.setItem('memoryInProgress', 'true'); initGame(); }
+
+        function checkLockout() { 
+            const lw = localStorage.getItem('lastGameWin'); 
+            if(lw && Date.now() - lw < 72*60*60*1000) { 
+                document.getElementById('intro-modal').style.display = 'none'; 
+                document.getElementById('intro-overlay').style.display = 'none'; 
+                document.getElementById('game-view').style.display = 'none'; 
+                document.getElementById('lockout-screen').style.display = 'block'; 
+                return true; 
+            } 
+            return false; 
+        }
+
+        function startGame() { 
+            if(localStorage.getItem('memoryInProgress') === 'true') { failCheat("Abandonaste la partida anterior"); return; } 
+            document.getElementById('intro-modal').style.display = 'none'; 
+            document.getElementById('intro-overlay').style.display = 'none'; 
+            localStorage.setItem('memoryInProgress', 'true'); 
+            initGame(); 
+        }
+
         function initGame() {
             const grid = document.getElementById('grid'); grid.innerHTML = ''; moves = 0; matchedPairs = 0; flippedCards = []; isLocking = false;
             let pairs = level === 1 ? 4 : (level === 2 ? 6 : (level === 3 ? 9 : 12));
@@ -100,8 +113,22 @@
             });
             startTimer();
         }
+
         function startTimer() { clearInterval(timerInterval); timerInterval = setInterval(() => { timeLeft--; document.getElementById('clock').innerText = timeLeft; if (timeLeft <= 0) { failCheat("¡Se acabó el tiempo!"); } }, 1000); }
-        function failCheat(motivo) { clearInterval(timerInterval); localStorage.setItem('lastGameWin', Date.now().toString()); localStorage.removeItem('memoryInProgress'); document.getElementById('intro-modal').style.display = 'none'; document.getElementById('intro-overlay').style.display = 'none'; document.getElementById('game-view').style.display = 'none'; document.getElementById('lockout-title').innerText = "Muerte Súbita ❌"; document.getElementById('lockout-msg').innerText = motivo + ". Tenés que esperar 72 horas para volver a intentar."; document.getElementById('lockout-screen').style.display = 'block'; document.getElementById('overlay').style.display = 'block'; }
+        
+        function failCheat(motivo) { 
+            clearInterval(timerInterval); 
+            localStorage.setItem('lastGameWin', Date.now().toString()); 
+            localStorage.removeItem('memoryInProgress'); 
+            document.getElementById('intro-modal').style.display = 'none'; 
+            document.getElementById('intro-overlay').style.display = 'none'; 
+            document.getElementById('game-view').style.display = 'none'; 
+            document.getElementById('lockout-title').innerText = "Muerte Súbita ❌"; 
+            document.getElementById('lockout-msg').innerText = motivo + ". Tenés que esperar 72 horas para volver a intentar."; 
+            document.getElementById('lockout-screen').style.display = 'block'; 
+            document.getElementById('overlay').style.display = 'block'; 
+        }
+
         function checkWin() {
             if (level < 4) { document.getElementById('modal-title').innerText = `Nivel ${level} OK!`; document.getElementById('modal').style.display = 'block'; document.getElementById('overlay').style.display = 'block'; }
             else {
@@ -110,14 +137,16 @@
                 let disponibles = CODIGOS_MAESTROS.filter(c => !conseguidos.includes(c));
                 let premio = disponibles.length > 0 ? disponibles[Math.floor(Math.random()*disponibles.length)] : "EXPERT";
                 if(disponibles.length > 0) { conseguidos.push(premio); localStorage.setItem('codigosConseguidos', JSON.stringify(conseguidos)); }
-                document.getElementById('codigo-memory').innerText = premio.toUpperCase(); document.getElementById('win-screen').style.display = 'block'; document.getElementById('overlay').style.display = 'block';
+                document.getElementById('codigo-memory').innerText = premio.toUpperCase(); 
+                document.getElementById('win-screen').style.display = 'block'; 
+                document.getElementById('overlay').style.display = 'block';
             }
         }
+
         function nextLevel() { level++; document.getElementById('modal').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; initGame(); }
         function finishGame() { localStorage.setItem('lastGameWin', Date.now().toString()); location.href = '../index.html'; }
-        function resetTimer() { if(prompt("Pass:") === "ivancito") { localStorage.removeItem('lastGameWin'); localStorage.removeItem('memoryInProgress'); location.reload(); } }
+        
         if(!checkLockout()) { if(localStorage.getItem('memoryInProgress') === 'true') { failCheat("Abandonaste la partida anterior"); } }
-        window.onclick = e => { if (!e.target.matches('.dropbtn')) document.getElementById("myDropdown").classList.remove('show'); }
     </script>
 </body>
 </html>

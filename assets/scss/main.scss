@@ -1,0 +1,12 @@
+// assets/scss/main.scss
+
+@import 'variables';
+@import 'layout';      // Acá está el fix del 100vh para .cooking-page
+@import 'games/index';
+@import 'games/quiz';
+@import 'games/jump';
+@import 'games/djsnoopy';
+@import 'games/codigos';
+@import 'games/memorygame';
+@import 'games/cooking'; // <-- ¡ESTE ES EL QUE FALTABA!
+@import 'games/cooking_v2';

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snoopy's Food Truck ✨</title>
+    <link rel="stylesheet" href="../assets/scss/main.css">
+</head>
+<body class="cooking-page">
+    <nav class="navbar"></nav>
+
+    <div class="window-view">
+        <div class="customer-spot">
+            <img src="../assets/images/woodstock.png" class="character-img">
+            <div class="speech-bubble">
+                <b>Woodstock</b>: <br> ¡Burger Nivel 3 con tomate!
+            </div>
+        </div>
+    </div>
+
+    <div class="kitchen-counter">
+        <div class="station pantry" data-label="DESPENSA">
+            <div class="ingredient" draggable="true" ondragstart="drag(event)" id="raw-meat" data-type="meat" data-state="raw"></div>
+            <div class="ingredient" draggable="true" ondragstart="drag(event)" id="whole-bread" data-type="whole-bread"></div>
+            <div class="ingredient" draggable="true" ondragstart="drag(event)" id="whole-tomato" data-type="whole-tomato"></div>
+        </div>
+
+        <div class="station grill" data-label="PARRILLA 🔥" ondragover="allowDrop(event)" ondrop="dropToGrill(event)" id="grill-zone"></div>
+
+        <div class="station cut-station" data-label="TABLA 🔪" ondragover="allowDrop(event)" ondrop="dropToCut(event)" id="cut-zone"></div>
+
+        <div class="station plate" data-label="PLATO" ondragover="allowDrop(event)" ondrop="dropToPlate(event)">
+            <div id="final-plate" style="display: flex; flex-direction: column-reverse; align-items: center; justify-content: center; height: 100%; width: 100%;"></div>
+        </div>
+
+        <div class="station trash" data-label="BASURA" ondragover="allowDrop(event)" ondrop="dropToTrash(event)">🗑️</div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+
+        function dropToGrill(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const zone = document.getElementById('grill-zone');
+            if (data === "raw-meat" && zone.children.length < 3) {
+                const meat = document.getElementById(data).cloneNode(true);
+                meat.id = "active-meat-" + Date.now();
+                meat.removeAttribute("draggable");
+                zone.appendChild(meat);
+                let level = 0;
+                const timer = setInterval(() => {
+                    level++;
+                    if (level <= 3) meat.dataset.state = `cook-${level}`;
+                    if (level === 3) { meat.setAttribute("draggable", "true"); meat.addEventListener('dragstart', drag); }
+                    if (level > 4) { 
+                        meat.dataset.state = "burnt"; 
+                        clearInterval(timer); 
+                    }
+                }, 4000); // 4 segundos por nivel
+            }
+        }
+
+        function dropToCut(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const el = document.getElementById(data);
+            const zone = document.getElementById('cut-zone');
+            
+            if (el.dataset.type === "whole-bread") {
+                ["bread-bottom", "bread-top"].forEach(type => {
+                    const b = document.createElement("div"); b.className = "ingredient"; b.dataset.type = type;
+                    b.id = "cut-" + Date.now() + Math.random(); b.setAttribute("draggable", "true"); b.addEventListener('dragstart', drag); zone.appendChild(b);
+                });
+                if (!data.includes("raw") && !data.includes("whole")) el.remove();
+            }
+            if (el.dataset.type === "whole-tomato") {
+                // UN SOLO ELEMENTO DE RODAJAS UNIFICADO
+                const s = document.createElement("div"); s.className = "ingredient"; s.dataset.type = "tomato-slices";
+                s.id = "slices-" + Date.now(); s.setAttribute("draggable", "true"); s.addEventListener('dragstart', drag); 
+                zone.appendChild(s);
+                if (!data.includes("raw") && !data.includes("whole")) el.remove();
+            }
+        }
+
+        function dropToPlate(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const el = document.getElementById(data);
+            const plate = document.getElementById('final-plate');
+            const isReady = (el.dataset.type === "meat" && (el.dataset.state === "cook-3" || el.dataset.state === "burnt")) || 
+                           ["bread-bottom", "bread-top", "tomato-slices"].includes(el.dataset.type);
+
+            if (isReady) {
+                const item = el.cloneNode(true);
+                item.className += " placed-item"; 
+                item.id = "on-plate-" + Date.now();
+                item.setAttribute("draggable", "true");
+                item.addEventListener('dragstart', drag);
+                plate.appendChild(item);
+                if (!data.includes("raw-") && !data.includes("whole-")) el.remove();
+            }
+        }
+
+        function dropToTrash(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const el = document.getElementById(data);
+            if (el && !data.includes("raw") && !data.includes("whole")) el.remove();
+        }
+    </script>
+</body>
+</html>

@@ -3,111 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snoopy Jump</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap');
-        :root { --rosa: #fb6f92; --claro: #ffc8dd; --asfalto: #4f5b66; }
-        
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 40%, #f18c8e 80%, #ffc371 100%); 
-            font-family: 'Quicksand', sans-serif; 
-            touch-action: none; 
-            user-select: none; 
-        }
-        
-        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; z-index: 1000; }
-        .dropbtn { background: white; color: var(--rosa); padding: 8px 15px; border-radius: 20px; border: 2px solid var(--claro); font-weight: bold; cursor: pointer; }
-        .dropdown-content { display: none; position: absolute; right: 15px; top: 50px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); overflow: hidden; border: 2px solid var(--claro); }
-        .dropdown-content a { color: #8a5a6a; padding: 10px 20px; text-decoration: none; display: block; font-size: 0.9rem; cursor: pointer; }
-        .show { display: block; }
-
-        #mute-btn { position: fixed; top: 15px; left: 15px; background: white; border: 2px solid var(--claro); padding: 8px 12px; border-radius: 20px; font-weight: bold; color: var(--rosa); cursor: pointer; z-index: 1001; font-size: 1.2rem; }
-
-        #game-ui { position: absolute; width: 100%; text-align: center; top: 60px; pointer-events: none; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); z-index: 100; }
-        .score { font-size: 1.8rem; color: white; font-weight: bold; }
-        
-        .mobile-controls { 
-            position: fixed; 
-            top: 42%; 
-            width: 100%; 
-            display: none; 
-            justify-content: space-between; 
-            padding: 0 25px; 
-            box-sizing: border-box; 
-            z-index: 1000; 
-            pointer-events: none;
-        }
-        .control-btn { 
-            width: 85px; 
-            height: 85px; 
-            background: rgba(255, 255, 255, 0.35); 
-            border: 4px solid white; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-weight: bold; 
-            font-size: 0.75rem; 
-            backdrop-filter: blur(4px); 
-            pointer-events: auto;
-            -webkit-tap-highlight-color: transparent; 
-        }
-        .control-btn:active { background: rgba(251, 111, 146, 0.6); transform: scale(0.9); }
-
-        #start-screen, #win-screen, #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; }
-        #overlay { background: rgba(0,0,0,0.5); display: none; }
-        .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 30px; text-align: center; width: 80%; max-width: 350px; border: 5px solid var(--claro); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .btn { background: var(--rosa); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; font-family: inherit; }
-        
-        canvas { display: block; background: transparent; }
-    </style>
+    <title>Snoopy Skate 🛹 - Smooth World Edition</title>
+    <link rel="stylesheet" href="../assets/scss/main.css">
 </head>
-<body>
+<body class="jump-page">
     <nav class="navbar">
         <div class="dropdown">
-            <button onclick="document.getElementById('myDropdown').classList.toggle('show')" class="dropbtn">☰ Menú</button>
+            <button onclick="toggleMenu(event)" class="dropbtn">☰</button>
             <div id="myDropdown" class="dropdown-content">
                 <a href="../index.html">🏠 Inicio</a>
                 <a href="memorygame.html">🧩 Memoria</a>
                 <a href="quizgame.html">🧠 Preguntados</a>
-                <a href="djsnoopy.html">🎵 Dj Snoopy</a>
-                <a href="codigos.html">🏆 Mis Códigos</a>
-                <a onclick="resetCooldown()">🔓 Reset Bloqueo (Admin)</a>
+                <a href="cooking_v2.html">👨‍🍳 Food Truck</a>
+                <a href="#" onclick="adminMenu()">⚙️ Admin</a>
             </div>
         </div>
     </nav>
 
     <button id="mute-btn" onclick="toggleMusic()">🔊</button>
+    <button id="fullscreen-btn" onclick="toggleFullScreen()">Pantalla Completa 📱</button>
 
     <div id="game-ui">
-        <div class="score">Puntos: <span id="current-score">0</span></div>
-        <div style="font-weight: bold; color: #eee; font-size: 0.9rem;">Récord: <span id="high-score">0</span></div>
-        <div style="color: #ffc8dd; font-size: 0.9rem; font-weight: bold; margin-top: 5px;">Meta: <span id="target-ui">1000</span></div>
+        <div class="score">Pts: <span id="current-score">0</span></div>
+        <div style="font-weight: bold; color: #eee; font-size: 0.9rem;">Récord: <span id="high-score">0</span> | Meta: <span id="target-ui">1000</span></div>
     </div>
 
     <div class="mobile-controls" id="touch-controls">
-        <div class="control-btn" id="btn-duck">AGACHAR</div>
-        <div class="control-btn" id="btn-jump">SALTAR</div>
+        <div class="control-group"> 
+            <div class="control-btn" id="btn-up">↑</div>
+            <div class="control-btn" id="btn-down">↓</div>
+        </div>
+        <div class="control-group"> 
+            <div class="control-btn" id="btn-jump">SALTAR</div>
+            <div class="control-btn" id="btn-duck">AGACHA</div>
+        </div>
     </div>
 
-    <div id="overlay"></div>
-    <div id="start-screen"><div class="modal">
-        <h2 style="color: var(--rosa)">Snoopy Skate 🛹</h2>
-        <p>Llega a <b id="start-target">1000</b> puntos para el código.<br><br>
-        🚗 Salta los autos<br>
-        🐦 Agáchate con los pájaros</p>
-        <button class="btn" onclick="startGame()">¡EMPEZAR!</button>
-    </div></div>
+    <div id="overlay" class="overlay"></div>
+    <div id="start-screen" class="modal" style="display: block;">
+        <h2>Snoopy Skate 🛹</h2>
+        <p>¡Usá el celu en <b>Horizontal</b>!<br><br>
+        👆👇 Desliza pantalla o usa flechas para cambiar carril.<br>
+        🔘 Botones derecha para saltar o agacharte.</p>
+        <button class="btn" onclick="startGame()">¡A RODAR!</button>
+    </div>
 
-    <div id="win-screen" style="display: none;"><div class="modal">
-        <h2 style="color: var(--rosa)">¡BIEN AHÍ! 🏆</h2>
-        <p>Has ganado un código secreto:</p>
-        <div id="codigo-premio" style="font-size: 1.8rem; font-weight: bold; color: var(--rosa); margin: 15px 0; background: #fff0f5; padding: 10px; border-radius: 15px;">---</div>
+    <div id="win-screen" class="modal" style="display: none;">
+        <h2>¡BIEN AHÍ! 🏆</h2>
+        <div id="codigo-premio" style="font-size: 1.8rem; font-weight: bold; color: #fb6f92; margin: 15px 0; background: #fff0f5; padding: 10px; border-radius: 15px;">---</div>
         <button class="btn" onclick="closeWin()">SEGUIR JUGANDO</button>
-    </div></div>
+    </div>
 
     <canvas id="gameCanvas"></canvas>
 
@@ -115,132 +60,325 @@
     <audio id="sfx-jump" src="../assets/songs/jump_sfx.mp3"></audio>
     <audio id="sfx-crash" src="../assets/songs/crash_sfx.mp3"></audio>
 
+    <script src="../assets/js/main.js"></script>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const snoopyImg = new Image(); snoopyImg.src = '../assets/images/snoopy_patineta.png';
+
+        // Assets
+        const snoopySkate = new Image(); snoopySkate.src = '../assets/images/snoopy_skate.png';
+        const snoopyJump = new Image(); snoopyJump.src = '../assets/images/snoopy_jump.png';
+        const snoopyDuck = new Image(); snoopyDuck.src = '../assets/images/snoopy_duck.png';
         const carImg = new Image(); carImg.src = '../assets/images/autito.png';
         const birdImg = new Image(); birdImg.src = '../assets/images/pajarito.png';
-        
+        const truckImg = new Image(); truckImg.src = '../assets/images/camion.png';
+
         const music = document.getElementById('bg-music');
         const sfxJump = document.getElementById('sfx-jump');
         const sfxCrash = document.getElementById('sfx-crash');
-        const muteBtn = document.getElementById('mute-btn');
 
-        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "05052025", "bebota", "elefante", "cocodrilo", "mariquita", "01022025", "24032025", "woodstuck", "sanvalentin", "papasfritas", "peonias", "hombrearaña", "patatuilla", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "uncodigorandom", "uncodigorandom2", "equisde", "esnupi", "ca1000", "hayquematarlo"];
+        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "bebota", "elefante", "woodstuck", "papasfritas", "hombrearaña", "silenciogil", "chipamboca", "gatitoexplota", "pinguinoenojado", "esnupi", "ca1000", "hayquematarlo"];
         
-        let gameRunning = false, score = 0, obstacles = [], frame = 0, gameSpeed = 7, buildings = [], groundY;
+        // Variables globales
+        let gameRunning = false, score = 0, obstacles = [], frame = 0, gameSpeed = 7, roadOffset = 0;
+        let bgProps = []; 
+        let currentTheme = 'city'; 
+        let timeState = 'day';
+        
+        // --- SISTEMA DE COLORES Y TRANSICIONES ---
+        const SKY_COLORS = {
+            day: [135, 206, 235],     // Celeste
+            evening: [255, 140, 0],   // Naranja atardecer
+            night: [11, 16, 38]       // Azul oscuro noche
+        };
+        const GROUND_COLORS = {
+            city: [128, 128, 128],    // Cemento
+            desert: [237, 201, 175],  // Arena
+            forest: [101, 67, 33],    // Tierra oscura
+            mountains: [80, 80, 80]   // Roca
+        };
+
+        let currentSkyRGB = [...SKY_COLORS.day];
+        let targetSkyRGB = [...SKY_COLORS.day];
+        let currentGroundRGB = [...GROUND_COLORS.city];
+        let targetGroundRGB = [...GROUND_COLORS.city];
+
+        // Función para interpolar (mezclar) colores suavemente
+        function lerpColor(current, target, speed) {
+            for (let i = 0; i < 3; i++) {
+                current[i] += (target[i] - current[i]) * speed;
+            }
+        }
+
         let highScore = parseInt(localStorage.getItem('jumpHighScore')) || 0;
         let jumpCodesCount = parseInt(localStorage.getItem('jumpCodesWonCount')) || 0;
-        
-        // REGLA: 1000 base + 500 por cada código ganado en este juego
         let currentGoal = 1000 + (jumpCodesCount * 500);
 
-        const player = { x: 50, y: 0, w: 85, h: 70, dy: 0, jumpForce: 15, gravity: 0.8, grounded: false, ducking: false, baseH: 70, duckH: 35 };
+        let laneY = []; 
+        const player = { lane: 1, x: 120, y: 0, visualY: 0, w: 90, h: 80, dy: 0, jumpForce: 10, gravity: 0.35, grounded: false, ducking: false, baseH: 80, duckH: 40 };
 
         function updateGoal() {
             currentGoal = 1000 + (jumpCodesCount * 500);
-            document.getElementById('target-ui').innerText = currentGoal;
-            document.getElementById('start-target').innerText = currentGoal;
+            if(document.getElementById('target-ui')) document.getElementById('target-ui').innerText = currentGoal;
+            if(document.getElementById('start-target')) document.getElementById('start-target').innerText = currentGoal;
+            if(document.getElementById('high-score')) document.getElementById('high-score').innerText = highScore;
         }
 
-        function toggleMusic() {
-            const isMuted = music.muted;
-            music.muted = !isMuted;
-            sfxJump.muted = !isMuted;
-            sfxCrash.muted = !isMuted;
-            muteBtn.innerText = music.muted ? "🔇" : "🔊";
+        function resize() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+            const centerY = canvas.height - 110;
+            laneY = [centerY - 45, centerY + 45]; 
+            player.visualY = laneY[player.lane];
         }
+        window.addEventListener('resize', resize); resize(); updateGoal();
 
-        document.getElementById('btn-jump').addEventListener('touchstart', (e) => { 
-            e.preventDefault(); 
-            if(player.grounded && gameRunning) {
-                sfxJump.currentTime = 0; sfxJump.play(); jump();
-            }
+        // --- CONTROLES ---
+        let touchStartY = 0;
+        window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+        window.addEventListener('touchend', e => {
+            if(!gameRunning) return;
+            const diff = touchStartY - e.changedTouches[0].clientY;
+            if (Math.abs(diff) > 40) { if (diff > 0) player.lane = 0; else player.lane = 1; }
         });
-        document.getElementById('btn-duck').addEventListener('touchstart', (e) => { e.preventDefault(); duck(true); });
-        document.getElementById('btn-duck').addEventListener('touchend', (e) => { e.preventDefault(); duck(false); });
+
+        document.getElementById('btn-up').addEventListener('touchstart', e => { e.preventDefault(); player.lane = 0; });
+        document.getElementById('btn-down').addEventListener('touchstart', e => { e.preventDefault(); player.lane = 1; });
+        document.getElementById('btn-jump').addEventListener('touchstart', e => { e.preventDefault(); jump(); });
+        document.getElementById('btn-duck').addEventListener('touchstart', e => { e.preventDefault(); duck(true); });
+        document.getElementById('btn-duck').addEventListener('touchend', e => { e.preventDefault(); duck(false); });
 
         window.addEventListener('keydown', e => { 
-            if(e.code === 'Space' || e.code === 'ArrowUp') { 
-                e.preventDefault(); 
-                if(player.grounded && gameRunning) { sfxJump.currentTime = 0; sfxJump.play(); jump(); }
-            }
-            if(e.code === 'ArrowDown') { e.preventDefault(); duck(true); }
+            if(e.code === 'KeyW' || e.code === 'ArrowUp') player.lane = 0;
+            if(e.code === 'KeyS' || e.code === 'ArrowDown') player.lane = 1;
+            if(e.code === 'Space') jump();
+            if(e.code.includes('Shift')) duck(true);
         });
-        window.addEventListener('keyup', e => { if(e.code === 'ArrowDown') duck(false); });
+        window.addEventListener('keyup', e => { if(e.code.includes('Shift')) duck(false); });
 
-        function jump() { if(player.grounded && gameRunning && !player.ducking) { player.dy = -player.jumpForce; player.grounded = false; } }
-        function duck(is) { if(!gameRunning) return; player.ducking = is; player.h = is ? player.duckH : player.baseH; if(player.grounded) player.y = groundY - player.h; }
+        function jump() { 
+            if(player.grounded && gameRunning && !player.ducking) { 
+                player.dy = -player.jumpForce; player.grounded = false; 
+                if(sfxJump) { sfxJump.currentTime = 0; sfxJump.play().catch(()=>{}); }
+            } 
+        }
+        function duck(is) { if(!gameRunning) return; player.ducking = is; player.h = is ? player.duckH : player.baseH; }
 
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; groundY = canvas.height - 100; if(!gameRunning) player.y = groundY - player.h; }
-        window.addEventListener('resize', resize); resize(); updateGoal();
-        document.getElementById('high-score').innerText = highScore;
+        function adminMenu() {
+            const pass = prompt("Contraseña Admin:");
+            if (pass === "ivancito") {
+                const act = prompt("1: Reset Puntaje\n2: Cambiar Tema (city, desert, forest, mountains)\n3: Cambiar Hora (day, evening, night)");
+                if (act === "1") { localStorage.removeItem('jumpHighScore'); localStorage.removeItem('jumpCodesWonCount'); location.reload(); }
+                if (act === "2") { currentTheme = prompt("Tema:").toLowerCase(); bgProps = []; }
+                if (act === "3") { timeState = prompt("Hora:").toLowerCase(); }
+            }
+        }
 
         function startGame() { 
             updateGoal(); 
             document.getElementById('start-screen').style.display = 'none'; 
             document.getElementById('overlay').style.display = 'none'; 
             document.getElementById('touch-controls').style.display = 'flex';
-            gameRunning = true; score = 0; obstacles = []; frame = 0; gameSpeed = 7; 
-            music.play(); loop(); 
+            gameRunning = true; score = 0; obstacles = []; frame = 0; gameSpeed = 7; bgProps = [];
+            // Reset colores al inicio
+            currentSkyRGB = [...SKY_COLORS.day]; targetSkyRGB = [...SKY_COLORS.day];
+            currentGroundRGB = [...GROUND_COLORS.city]; targetGroundRGB = [...GROUND_COLORS.city];
+            if(music) music.play().catch(()=>{}); 
+            loop(); 
+        }
+
+        // --- LÓGICA DE ESCENARIOS Y COLORES ---
+        function updateEnvironmentState() {
+            // Ciclos más largos para transiciones suaves
+            const cycle = frame % 12000; 
+            if (cycle < 5000) timeState = 'day';
+            else if (cycle < 8000) timeState = 'evening';
+            else timeState = 'night';
+
+            if (frame % 3000 === 0) {
+                const themes = ['city', 'desert', 'forest', 'mountains'];
+                currentTheme = themes[Math.floor(Math.random() * themes.length)];
+            }
+
+            // Establecer colores objetivo (Targets)
+            targetSkyRGB = SKY_COLORS[timeState];
+            targetGroundRGB = GROUND_COLORS[currentTheme];
+        }
+
+        function updateColors() {
+            // Velocidad de transición (cuanto menor, más suave)
+            lerpColor(currentSkyRGB, targetSkyRGB, 0.005);
+            lerpColor(currentGroundRGB, targetGroundRGB, 0.01);
+        }
+
+        function drawSky() {
+            // Usar el color interpolado actual
+            ctx.fillStyle = `rgb(${currentSkyRGB[0]}, ${currentSkyRGB[1]}, ${currentSkyRGB[2]})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (timeState === 'night' && currentSkyRGB[2] < 50) { // Solo mostrar estrellas si está oscuro
+                ctx.fillStyle = `rgba(255, 255, 255, ${1 - currentSkyRGB[2]/255})`; // Estrellas se desvanecen al amanecer
+                for(let i=0; i<30; i++) {
+                    let x = (Math.sin(i*123.45) + 1) / 2 * canvas.width;
+                    let y = (Math.cos(i*543.21) + 1) / 2 * (laneY[0]-150);
+                    ctx.fillRect(x, y, 2, 2);
+                }
+            }
+
+            // Sol/Luna con transición de color y posición
+            const celestialColor = timeState === 'night' ? [238, 238, 238] : (timeState === 'evening' ? [255, 165, 0] : [255, 215, 0]);
+            ctx.fillStyle = `rgb(${celestialColor[0]}, ${celestialColor[1]}, ${celestialColor[2]})`;
+            
+            let sunY = 80;
+            if (timeState === 'evening') sunY = 150; // El sol baja al atardecer
+
+            ctx.beginPath();
+            ctx.arc(canvas.width - 100, sunY, 40, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawBackgroundProps() {
+             // ... (Mismo código de props de la versión anterior, funciona bien) ...
+             if (frame % 80 === 0) {
+                let prop = { x: canvas.width, type: currentTheme, w: 0, h: 0, color: '' };
+                if (currentTheme === 'city') {
+                    prop.w = 60 + Math.random() * 60; prop.h = 100 + Math.random() * 200;
+                    prop.color = timeState === 'night' ? '#1a1a1a' : '#333';
+                } else if (currentTheme === 'desert') {
+                    prop.w = 30; prop.h = 40 + Math.random() * 60; prop.color = '#2d5a27';
+                } else if (currentTheme === 'forest') {
+                    prop.w = 50 + Math.random() * 40; prop.h = 80 + Math.random() * 100;
+                } else if (currentTheme === 'mountains') {
+                    prop.w = 150 + Math.random() * 100; prop.h = 150 + Math.random() * 150;
+                }
+                bgProps.push(prop);
+            }
+
+            bgProps.forEach((p, i) => {
+                p.x -= gameSpeed * 0.3;
+                
+                if (p.type === 'city') {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, laneY[0] - p.h - 40, p.w, p.h);
+                    if (timeState === 'night' && currentSkyRGB[2] < 60) { // Ventanas solo si está oscuro
+                        ctx.fillStyle = Math.random() > 0.5 ? '#FFD700' : '#222';
+                        for(let r=0; r<p.h/20; r++) { for(let c=0; c<p.w/20; c++) { if (Math.random() > 0.7) ctx.fillRect(p.x + 5 + c*15, (laneY[0] - p.h - 35) + r*20, 8, 8); }}
+                    }
+                } else if (p.type === 'desert') {
+                    ctx.fillStyle = p.color; ctx.fillRect(p.x, laneY[0] - p.h - 40, 15, p.h); ctx.fillRect(p.x - 10, laneY[0] - p.h/2 - 40, 30, 10);
+                } else if (p.type === 'forest') {
+                    ctx.fillStyle = '#1e392a'; ctx.beginPath(); ctx.moveTo(p.x, laneY[0] - 40); ctx.lineTo(p.x + p.w, laneY[0] - 40); ctx.lineTo(p.x + p.w/2, laneY[0] - p.h - 40); ctx.fill();
+                } else if (p.type === 'mountains') {
+                    ctx.fillStyle = '#444'; ctx.beginPath(); ctx.moveTo(p.x, laneY[0] - 40); ctx.lineTo(p.x + p.w, laneY[0] - 40); ctx.lineTo(p.x + p.w/2, laneY[0] - p.h - 40); ctx.fill();
+                    ctx.fillStyle = '#eee'; ctx.beginPath(); ctx.moveTo(p.x + p.w*0.35, laneY[0] - p.h*0.7 - 40); ctx.lineTo(p.x + p.w*0.65, laneY[0] - p.h*0.7 - 40); ctx.lineTo(p.x + p.w/2, laneY[0] - p.h - 40); ctx.fill();
+                }
+                if (p.x + p.w < -200) bgProps.splice(i, 1);
+            });
         }
 
         function loop() {
             if(!gameRunning) return;
             ctx.clearRect(0,0, canvas.width, canvas.height); frame++;
-            
-            // Aceleración inicial leve
-            if(score > 0 && score % 1000 === 0 && gameSpeed < 11) {
-                gameSpeed += 0.02;
+            if(frame % 1000 === 0 && gameSpeed < 14) gameSpeed += 0.5;
+
+            updateEnvironmentState();
+            updateColors(); // <--- MAGIA DE TRANSICIÓN AQUÍ
+            drawSky();
+            drawBackgroundProps();
+
+            // Físicas y Lerp
+            player.dy += player.gravity;
+            player.y += player.dy;
+            player.visualY += (laneY[player.lane] - player.visualY) * 0.15;
+
+            if(player.y + player.h > player.visualY) {
+                player.y = player.visualY - player.h;
+                player.dy = 0;
+                player.grounded = true;
             }
 
-            drawEnvironment();
-            player.dy += player.gravity; player.y += player.dy;
-            if(player.y + player.h > groundY) { player.y = groundY - player.h; player.dy = 0; player.grounded = true; }
-
+            let sprite = snoopySkate;
+            if(!player.grounded) sprite = snoopyJump;
+            else if(player.ducking) sprite = snoopyDuck;
             let bob = (player.grounded && !player.ducking) ? Math.sin(frame * 0.2) * 3 : 0;
-            ctx.save(); ctx.translate(player.x + player.w, player.y + bob); ctx.scale(-1, 1); ctx.drawImage(snoopyImg, 0, 0, player.w, player.h); ctx.restore();
 
-            if(frame % 100 === 0) spawn();
-            
-            obstacles.forEach((o, i) => {
-                o.x -= gameSpeed; 
-                ctx.drawImage(o.type === 'car' ? carImg : birdImg, o.x, o.y, o.w, o.h);
+            // DIBUJO POR CAPAS
+            drawRoadAndGround(); // <--- NUEVA FUNCIÓN PARA EL SUELO
 
-                let hit = false;
-                if (o.type === 'car') {
-                    hit = player.x < o.x + o.w - 15 && player.x + player.w > o.x + 15 && player.y + player.h > o.y + 10;
-                } else {
-                    if (!player.ducking) {
-                        hit = player.x < o.x + o.w - 10 && player.x + player.w > o.x + 10 && player.y < o.y + o.h + 100; 
-                    }
-                }
-
-                if(hit) gameOver();
-                if(o.x + o.w < 0) { 
-                    obstacles.splice(i,1); score += 100; document.getElementById('current-score').innerText = score; 
-                    if (score > highScore) { highScore = score; localStorage.setItem('jumpHighScore', highScore); document.getElementById('high-score').innerText = highScore; }
-                    checkWinCondition(); 
-                }
+            obstacles.filter(o => o.lane === 0).forEach(o => {
+                o.x -= gameSpeed;
+                ctx.drawImage(o.type === 'bird' ? birdImg : (o.type === 'truck' ? truckImg : carImg), o.x, o.y, o.w, o.h);
+                checkCollision(o);
             });
+
+            if(player.lane === 0) ctx.drawImage(sprite, player.x, player.y + bob, player.w, player.h);
+
+            obstacles.filter(o => o.lane === 1).forEach(o => {
+                o.x -= gameSpeed;
+                ctx.drawImage(o.type === 'bird' ? birdImg : (o.type === 'truck' ? truckImg : carImg), o.x, o.y, o.w, o.h);
+                checkCollision(o);
+            });
+
+            if(player.lane === 1) ctx.drawImage(sprite, player.x, player.y + bob, player.w, player.h);
+
+            if(obstacles.length === 0) ctx.drawImage(sprite, player.x, player.y + bob, player.w, player.h);
+
+            obstacles = obstacles.filter(o => o.x > -200);
+            if(frame % 85 === 0) spawn();
             requestAnimationFrame(loop);
         }
 
-        function spawn() {
-            const isBird = Math.random() > 0.6;
-            if (isBird) {
-                obstacles.push({ x: canvas.width, y: groundY - 110, w: 55, h: 45, type: 'bird' });
-            } else {
-                obstacles.push({ x: canvas.width, y: groundY - 45, w: 80, h: 50, type: 'car' });
+        function checkCollision(o) {
+            if (o.lane === player.lane) {
+                let hit = false;
+                if (o.type === 'car') hit = player.x < o.x + o.w - 35 && player.x + player.w > o.x + 35 && player.y + player.h > o.y + 10;
+                else if (o.type === 'bird') { if (!player.ducking) hit = player.x < o.x + o.w - 25 && player.x + player.w > o.x + 25 && player.y < o.y + o.h + 10; }
+                else if (o.type === 'truck') hit = player.x < o.x + o.w - 20 && player.x + player.w > o.x + 20;
+                
+                if(hit) gameOver();
+                
+                if(!o.passed && o.x < player.x) {
+                    o.passed = true;
+                    score += 100;
+                    document.getElementById('current-score').innerText = score;
+                    if (score > highScore) { highScore = score; localStorage.setItem('jumpHighScore', highScore); document.getElementById('high-score').innerText = highScore; }
+                    checkWinCondition();
+                }
             }
         }
 
-        function drawEnvironment() {
-            if(frame % 70 === 0) buildings.push({ x: canvas.width, w: 60+Math.random()*60, h: 100+Math.random()*150, color: `hsla(${Math.random()*40 + 200}, 30%, 20%, 0.5)` });
-            buildings.forEach((b, i) => { b.x -= gameSpeed * 0.2; ctx.fillStyle = b.color; ctx.fillRect(b.x, groundY - b.h, b.w, b.h); if(b.x + b.w < 0) buildings.splice(i, 1); });
-            ctx.fillStyle = '#333'; ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
-            ctx.fillStyle = '#ffffff'; for(let i = -frame % 100; i < canvas.width; i += 100) ctx.fillRect(i, groundY + 40, 60, 10);
+        function spawn() {
+            if(obstacles.length > 0 && obstacles[obstacles.length-1].x > canvas.width - 280) return;
+            const lane = Math.floor(Math.random() * 2);
+            const rand = Math.random();
+
+            if (rand < 0.5) { 
+                obstacles.push({ x: canvas.width + 80, y: laneY[0] - 105, w: 160, h: 110, type: 'truck', lane: 0, passed: false });
+                const t2 = Math.random() > 0.5 ? 'car' : 'bird';
+                obstacles.push({ x: canvas.width, y: t2==='car'?laneY[1]-55:laneY[1]-100, w: t2==='car'?90:60, h: t2==='car'?60:50, type: t2, lane: 1, passed: false });
+            } else {
+                const t = Math.random() > 0.7 ? 'truck' : (Math.random() > 0.4 ? 'car' : 'bird');
+                let y = (t === 'truck') ? laneY[lane] - 105 : (t === 'car' ? laneY[lane] - 55 : laneY[lane] - 100);
+                obstacles.push({ x: canvas.width, y: y, w: t==='truck'?160:t==='car'?90:60, h: t==='truck'?110:t==='car'?60:50, type: t, lane: lane, passed: false });
+            }
+        }
+
+        // NUEVA FUNCIÓN PARA DIBUJAR CARRETERA Y SUELO DINÁMICO
+        function drawRoadAndGround() {
+            // 1. Carretera (Asfalto)
+            ctx.fillStyle = timeState === 'night' ? '#222' : '#444'; // Asfalto más oscuro de noche
+            const roadTop = laneY[0] - 60;
+            const roadBottom = laneY[1] + 40;
+            ctx.fillRect(0, roadTop, canvas.width, roadBottom - roadTop);
+
+            // 2. Suelo debajo de la carretera (Relleno dinámico)
+            ctx.fillStyle = `rgb(${currentGroundRGB[0]}, ${currentGroundRGB[1]}, ${currentGroundRGB[2]})`;
+            ctx.fillRect(0, roadBottom, canvas.width, canvas.height - roadBottom);
+
+            // 3. Línea divisoria animada
+            roadOffset -= gameSpeed; if (roadOffset < -60) roadOffset = 0;
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.setLineDash([30, 30]); ctx.lineDashOffset = -roadOffset;
+            ctx.beginPath(); ctx.moveTo(0, (laneY[0] + laneY[1]) / 2 - 10); ctx.lineTo(canvas.width, (laneY[0] + laneY[1]) / 2 - 10); ctx.stroke(); ctx.setLineDash([]);
         }
 
         function checkWinCondition() {
@@ -249,26 +387,27 @@
                 gameRunning = false;
                 let conseguidos = JSON.parse(localStorage.getItem('codigosConseguidos')) || [];
                 let disp = CODIGOS_MAESTROS.filter(c => !conseguidos.includes(c));
-                let premio = disp.length > 0 ? disp[Math.floor(Math.random()*disp.length)] : "¡CAMPEONA!";
+                let premio = disp.length > 0 ? disp[Math.floor(Math.random()*disp.length)] : "¡ERES LA MEJOR!";
                 if(disp.length > 0) { 
                     conseguidos.push(premio); 
                     localStorage.setItem('codigosConseguidos', JSON.stringify(conseguidos)); 
                     localStorage.setItem('jumpWinTime', Date.now()); 
                     jumpCodesCount++; 
                     localStorage.setItem('jumpCodesWonCount', jumpCodesCount); 
-                    updateGoal(); 
                 }
-                document.getElementById('codigo-premio').innerText = premio.toUpperCase(); document.getElementById('win-screen').style.display = 'block'; document.getElementById('overlay').style.display = 'block';
+                document.getElementById('codigo-premio').innerText = premio.toUpperCase(); 
+                document.getElementById('win-screen').style.display = 'block'; 
+                document.getElementById('overlay').style.display = 'block';
             }
         }
 
         function gameOver() { 
-            gameRunning = false; music.pause(); sfxCrash.play(); 
+            gameRunning = false; if(music) music.pause(); if(sfxCrash) sfxCrash.play().catch(()=>{}); 
             setTimeout(() => { alert("¡Chocaste! Puntaje: " + score); location.reload(); }, 100); 
         }
         function closeWin() { document.getElementById('win-screen').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; gameRunning = true; loop(); }
-        function resetCooldown() { if(prompt("Pass Admin:") === "ivancito") { localStorage.removeItem('jumpWinTime'); localStorage.setItem('jumpCodesWonCount', 0); location.reload(); } }
-        window.onclick = e => { if (!e.target.matches('.dropbtn')) document.getElementById("myDropdown").classList.remove('show'); }
+        function toggleMusic() { music.muted = !music.muted; sfxJump.muted = music.muted; sfxCrash.muted = music.muted; document.getElementById('mute-btn').innerText = music.muted ? "🔇" : "🔊"; }
+        function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
     </script>
 </body>
 </html>

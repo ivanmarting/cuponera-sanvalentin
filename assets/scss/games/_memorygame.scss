@@ -1,0 +1,63 @@
+// assets/scss/games/_memorygame.scss
+
+.memory-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        .snoopy-header { width: 120px; height: auto; }
+    }
+
+    .game-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        width: 95%;
+        max-width: 400px;
+    }
+
+    .card {
+        aspect-ratio: 1/1;
+        background-color: $rosa-fuerte;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        color: transparent;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 3px solid $blanco;
+
+        &.flipped {
+            background-color: $blanco;
+            color: initial;
+            transform: rotateY(180deg);
+            border: 3px solid $rosa-claro;
+        }
+
+        &.matched {
+            visibility: hidden;
+        }
+    }
+
+    #codigo-memory {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: $rosa-fuerte;
+        margin: 15px 0;
+        background: $rosa-fondo;
+        padding: 10px;
+        border-radius: 15px;
+    }
+}

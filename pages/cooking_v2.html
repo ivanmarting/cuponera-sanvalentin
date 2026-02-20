@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snoopy's Food Truck</title>
+    <link rel="stylesheet" href="../assets/scss/main.css">
+    <script src="https://bernardo-castilho.github.io/DragDropTouch/DragDropTouch.js"></script>
+</head>
+<body class="cooking-page-v2" id="game-body">
+
+    <div id="main-menu" class="main-menu-overlay">
+        <img src="../assets/images/menu_title.png" alt="Snoopy's Food Truck" class="title-logo">
+        <button class="menu-btn" onclick="playClickSound(); startGame()">Jugar</button>
+        <button class="menu-btn" onclick="playClickSound(); openModal('store-overlay')">Tienda</button>
+        <button class="menu-btn" onclick="playClickSound(); openModal('achievements-overlay')">Logros</button>
+        <button class="menu-btn" onclick="playClickSound(); window.location.href='../index.html'">Salir</button>
+    </div>
+
+    <div id="store-overlay" class="modal-overlay" onclick="closeModal('store-overlay')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="playClickSound(); closeModal('store-overlay')">X</button>
+            <div class="admin-btn" onclick="adminMenu()" title="Menú Admin">⚙️</div>
+            
+            <h2>🛒 Tienda de Zaira</h2>
+            <div style="text-align:center; font-size:1.2rem; font-weight:bold;">Tus Monedas: <span id="store-coins" style="color:#e63946;">0</span> 💰</div>
+            <div class="store-grid">
+                <div class="store-section">
+                    <h3>📦 Cajas Misteriosas (1💰)</h3>
+                    <div class="store-item" id="box-1"></div>
+                    <div class="store-item" id="box-2"></div>
+                    <div class="store-item" id="box-3"></div>
+                </div>
+                <div class="store-section">
+                    <h3>🎟️ Cupones Reales (3💰)</h3>
+                    <div class="store-item coupon-item" id="cup-1"></div>
+                    <div class="store-item coupon-item" id="cup-2"></div>
+                    <div class="store-item coupon-item" id="cup-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward-view-overlay" class="modal-overlay" onclick="closeModal('reward-view-overlay')">
+        <div class="modal-content" style="text-align:center;" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="playClickSound(); closeModal('reward-view-overlay')">X</button>
+            <h2 id="reward-title">Tu Recompensa</h2>
+            <div id="reward-content"></div>
+        </div>
+    </div>
+
+    <div id="achievements-overlay" class="modal-overlay" onclick="closeModal('achievements-overlay')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="playClickSound(); closeModal('achievements-overlay')">X</button>
+            <h2>🏆 Logros (20)</h2>
+            <ul class="achievements-list" id="achievements-list"></ul>
+        </div>
+    </div>
+
+    <div id="game-over-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <h2>¡Te cerró la Muni morocha! ❌</h2>
+            <p style="font-size:1.5rem;">Fallaste 3 pedidos y los clientes se mandaron a mudar.</p>
+            <p style="font-size:2rem; font-weight:bold;">Puntos finales: <span id="final-score">0</span></p>
+            <button class="menu-btn" style="font-size: 1.5rem; padding: 10px 20px;" onclick="playClickSound(); location.reload()">Volver al Menú</button>
+        </div>
+    </div>
+
+    <div id="recipe-overlay" class="modal-overlay" onclick="toggleRecipeBook()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="playClickSound(); toggleRecipeBook()">X</button>
+            <h2>📖 Manual del Food Truck</h2>
+            <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa Kids:</strong> Pan, Carne</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa de Queso:</strong> Pan, Carne, Queso</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa Zaira:</strong> Pan, Carne, Queso, Tomate</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa Aburridonga:</strong> Pan, Carne, Lechuga, Tomate</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa de Tomate:</strong> Pan, Carne, Tomate</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa de Lechuga:</strong> Pan, Carne, Lechuga</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Hamburguesa Completa:</strong> Pan, Carne, Lechuga, Queso, Tomate</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Pizza Muzzarella:</strong> Masa, Salsa, Queso (Horneada)</li>
+                <li style="background: white; padding: 10px; border-radius: 10px; border: 2px solid #540b0e;"><strong>Pizza Napolitana:</strong> Masa, Salsa, Queso (Horneada), Tomate fresco</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div id="game-container" style="display:none; width:100%; height:100%;">
+        <button id="fullscreen-btn" onclick="playClickSound(); toggleFullScreen()">Fullscreen 📱</button>
+        <button id="recipe-btn" onclick="playClickSound(); toggleRecipeBook()">📖 Menú</button>
+        <button id="reset-btn" onclick="playClickSound(); forceResetPlate()">♻️ Reset</button>
+
+        <div class="hud-bar">
+            <div class="hud-box">Pts: <span id="score-display">0</span></div>
+            <div class="hud-box">Récord: <span id="record-display">0</span></div>
+            <div class="hud-box">T: <span id="timer-display">∞</span></div>
+            <div class="hud-box stars-box" id="stars-display">☆☆☆☆☆</div>
+            <div class="hud-box strikes-box" id="strikes-display">Fallos: 0/3</div>
+        </div>
+
+        <div id="warning-msg">¡Aviso!</div>
+        <div class="station radio-toggle" onclick="toggleRadio()"></div>
+
+        <div class="window-view station" id="serve-zone" ondragover="allowDrop(event)" ondrop="serveOrder(event)">
+            <div class="woodstock-speech-bubble" id="order-bubble">¡Preparando cocina...!</div>
+        </div>
+
+        <div class="station pantry-dry" onclick="openMenu('pantry')" ondragover="allowDrop(event)" ondrop="returnToStorage(event)"></div>
+        <div class="station fridge" onclick="openMenu('fridge')" ondragover="allowDrop(event)" ondrop="returnToStorage(event)"></div>
+        <div class="station pizza-stack"><img src="../assets/images/ing_pizza_dough.png" id="stack-dough" class="ingredient" data-type="pizza-dough" draggable="true" ondragstart="drag(event)" style="opacity:0; width:100%; height:100%;"></div>
+
+        <div class="station cutlery-drawer">
+            <div id="tool-knife" class="tool" onclick="selectTool('knife')"></div>
+            <div id="tool-spatula" class="tool" onclick="selectTool('spatula')"></div>
+            <div id="tool-peel" class="tool" onclick="selectTool('peel')"></div>
+        </div>
+
+        <div class="station grill" id="grill-zone" ondragover="allowDrop(event)" ondrop="dropToGrill(event)"></div>
+        <div class="station cut-station" id="cut-zone" ondragover="allowDrop(event)" ondrop="dropToCut(event)"></div>
+        <div class="station plate" id="plate-zone" ondragover="allowDrop(event)" ondrop="dropToPlate(event)"><div id="burger-instance" draggable="true" ondragstart="dragDish(event)"></div></div>
+        <div class="station oven-zone" id="oven-zone" ondragover="allowDrop(event)" ondrop="dropToOven(event)"></div>
+        <div class="station trash" ondragover="allowDrop(event)" ondrop="dropToTrash(event)"></div>
+
+        <div id="inventory-overlay" class="inventory-overlay" onclick="closeMenuOutside(event)">
+            <div class="inventory-menu" id="menu-content" onclick="event.stopPropagation()"></div>
+        </div>
+    </div>
+
+    <script>
+        // ================= GESTIÓN DE DATOS Y LOGROS =================
+        let gameData = JSON.parse(localStorage.getItem('snoopyFoodTruckDataV1')) || {
+            coins: 0, highScore: 0, totalOrdersServed: 0, totalTrash: 0,
+            unlockedBoxes: [], unlockedCoupons: [], achievements: {}
+        };
+
+        const achievementList = [
+            { id: 'firstPlay', name: "Mi Primera Chamba", desc: "Abre el juego por primera vez." },
+            { id: 'fiveStars', name: "Master Chef", desc: "Consigue 5 estrellas en una partida." },
+            { id: 'firstBuy', name: "Compradora Compulsiva", desc: "Compra tu primer objeto en la tienda." },
+            { id: 'chefMaster', name: "Mil peso", desc: "Supera los 1000 puntos de Récord." },
+            { id: 'survivor', name: "Casi bro", desc: "Salva un pedido con 3 segundos o menos." },
+            { id: 'speedy', name: "Tufas tufuriu", desc: "Entrega un pedido en menos de 10 segundos." },
+            { id: 'pizzaLover', name: "Pizzero Pizzerinno", desc: "Entrega 3 pizzas seguidas." },
+            { id: 'burgerKing', name: "Reina de las Anvorgesas", desc: "Entrega 3 hamburguesas completas seguidas." },
+            { id: 'trashMaster', name: "Macanudo", desc: "Tira 20 ingredientes a la basura en total." },
+            { id: 'burntOffering', name: "Se me quemó el rancho", desc: "Quema una carne en la parrilla." },
+            { id: 'richKid', name: "Forrao en guita", desc: "Acumula 10 monedas." },
+            { id: 'bigSpender', name: "Curiosa", desc: "Desbloquea las 3 cajas misteriosas." },
+            { id: 'couponCollector', name: "Ansiosa", desc: "Canjea los 3 cupones reales." },
+            { id: 'centurion', name: "Maestra de la Chamba", desc: "Sirve 100 pedidos en total." },
+            { id: 'oopsie', name: "Pucha", desc: "Entrega un pedido incorrecto por primera vez." },
+            { id: 'closeCall', name: "Por un Demonio", desc: "Termina una partida con 2 fallos." },
+            { id: 'marathon', name: "Vicio", desc: "Llega a los 2000 puntos." },
+            { id: 'noWaste', name: "Cero Desperdicio", desc: "Llega a 500 puntos sin usar la basura." },
+            { id: 'toolMaster', name: "Todo terreno", desc: "Usa cuchillo, espátula y pala en un pedido." },
+            { id: 'gameOver', name: "Primer último día", desc: "Pierde una partida." }
+        ];
+
+        function saveData() { localStorage.setItem('snoopyFoodTruckDataV1', JSON.stringify(gameData)); updateMenuUI(); }
+        function checkAchievement(id) { if (!gameData.achievements[id]) { gameData.achievements[id] = true; saveData(); showWarning(`🏆 Logro Desbloqueado:\n${achievementList.find(a=>a.id===id).name}`); playSound(sounds.success); } }
+
+        // ================= FUNCIÓN ADMIN UNIFICADA =================
+        function adminMenu() {
+            const pass = prompt("Ingrese contraseña de administrador:");
+            if (pass === "ivancito") {
+                const action = prompt("¿Qué deseas hacer?\n1: Añadir Monedas\n2: Reiniciar Progreso (BORRAR TODO)");
+                if (action === "1") {
+                    const amount = parseInt(prompt("¿Cuántas monedas deseas añadir?"));
+                    if (!isNaN(amount) && amount > 0) { gameData.coins += amount; saveData(); alert(`¡Se han añadido ${amount} monedas!`); }
+                } else if (action === "2") {
+                    if(confirm("¿Estás seguro? Esto borrará tus monedas, récords y compras. No se puede deshacer.")) {
+                        localStorage.removeItem('snoopyFoodTruckDataV1');
+                        alert("Progreso reiniciado. La página se recargará.");
+                        location.reload();
+                    }
+                }
+            } else if (pass !== null) { alert("Contraseña incorrecta."); }
+        }
+
+        function updateMenuUI() {
+            document.getElementById('store-coins').innerText = gameData.coins;
+            const btnStyle = "background: #4cc9f0; margin-left: 5px; border: 2px solid #000; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #000;";
+            
+            if(gameData.unlockedBoxes.includes(1)) {
+                document.getElementById('box-1').innerHTML = `Caja Misteriosa 1 <br><button disabled style="background:#ffd166; color:#540b0e;">¡Poder Activo!</button><p style="font-size:0.75rem; margin-top:5px; color:#333; margin-bottom:0;">10% chance de propina (+15pts)</p>`;
+            } else {
+                document.getElementById('box-1').innerHTML = `Caja Misteriosa 1 <br><button onclick="playClickSound(); buyItem('box', 1, 1)">Comprar</button>`;
+            }
+
+            if(gameData.unlockedBoxes.includes(2)) {
+                document.getElementById('box-2').innerHTML = `Caja Misteriosa 2 <br><button disabled>¡Canjeado!</button> <button style="${btnStyle}" onclick="playClickSound(); viewSurprise(2, 'chocolate')">Ver</button>`;
+            } else {
+                document.getElementById('box-2').innerHTML = `Caja Misteriosa 2 <br><button onclick="playClickSound(); buyItem('box', 2, 1)">Comprar</button>`;
+            }
+
+            if(gameData.unlockedBoxes.includes(3)) {
+                document.getElementById('box-3').innerHTML = `Caja Misteriosa 3 <br><button disabled>¡Canjeado!</button> <button style="${btnStyle}" onclick="playClickSound(); viewSurprise(3, 'letter')">Leer</button>`;
+            } else {
+                document.getElementById('box-3').innerHTML = `Caja Misteriosa 3 <br><button onclick="playClickSound(); buyItem('box', 3, 1)">Comprar</button>`;
+            }
+
+            [1,2,3].forEach(i => {
+                const cupContainer = document.getElementById(`cup-${i}`);
+                let cupNames = ["Bailar 💃", "Cantar Juntos 🎤", "Comida Favorita 🍕"];
+                if(gameData.unlockedCoupons.includes(i)) {
+                    cupContainer.innerHTML = `Vale por... ${cupNames[i-1]} <br><button disabled>¡Canjeado!</button>`;
+                } else {
+                    cupContainer.innerHTML = `Vale por... ${cupNames[i-1]} <br><button onclick="playClickSound(); buyItem('coupon', ${i}, 3)">Comprar</button>`;
+                }
+            });
+
+            const achList = document.getElementById('achievements-list'); achList.innerHTML = '';
+            achievementList.forEach(ach => {
+                const isUnl = gameData.achievements[ach.id];
+                achList.innerHTML += `<li class="${isUnl ? 'unlocked' : ''}"><div><span>${isUnl ? '✅' : '🔒'}</span> <b>${ach.name}</b><br><small>${ach.desc}</small></div></li>`;
+            });
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; updateMenuUI(); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function buyItem(type, id, cost) {
+            if (gameData.coins >= cost) {
+                gameData.coins -= cost;
+                if (type === 'box') { gameData.unlockedBoxes.push(id); checkAchievement('firstBuy'); if(gameData.unlockedBoxes.length===3) checkAchievement('bigSpender'); }
+                if (type === 'coupon') { gameData.unlockedCoupons.push(id); if(gameData.unlockedCoupons.length===3) checkAchievement('couponCollector'); }
+                saveData(); playSound(sounds.success);
+            } else { alert("¡No tienes suficientes monedas! Gana estrellas jugando."); playSound(sounds.fail); }
+        }
+
+        function viewSurprise(id, type) {
+            document.getElementById('reward-title').innerText = `Sorpresa Misteriosa`;
+            const content = document.getElementById('reward-content');
+            const digitalCouponStyle = "background: #fffcf2; border: 4px dashed #e09f3e; border-radius: 15px; padding: 20px; margin: 20px auto; max-width: 400px; text-align: center;";
+            const loveLetterStyle = "background: #fdf5e6; border: 3px solid #e63946; border-radius: 10px; padding: 25px; margin: 20px auto; max-width: 500px; font-family: 'Comic Sans MS', cursive; text-align: left;";
+            
+            if (type === 'chocolate') {
+                let dateStr = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES'); 
+                content.innerHTML = `<div style="${digitalCouponStyle} border-color: #553c2e;"><h3 style="color: #553c2e; font-size: 1.2rem; margin:0;">Vale Especial por...</h3><h1 style="color: #d4a373; font-size: 2rem; margin: 10px 0; -webkit-text-stroke: 1px #553c2e; text-shadow: 2px 2px 0px #553c2e;">1 Chocolate Block Blanco 🍫</h1><p style="font-weight: bold; color: #333; margin: 5px 0;">¡Te lo ganaste, Chef!</p><p style="font-weight: bold; margin: 5px 0; color: #e63946;">Válido hasta: ${dateStr}</p><p style="font-family: 'Comic Sans MS', cursive; color: #e63946; font-size: 1.2rem; margin-top: 20px;">De Iván ❤️</p></div>`;
+            } else if (type === 'letter') {
+                content.innerHTML = `<div style="${loveLetterStyle}"><h3 style="color: #9e2a2b; margin-top: 0; border-bottom: 2px dashed #e63946; padding-bottom: 10px; text-align: center; font-size: 1.8rem;">Para mi Chef favorita 👩‍🍳</h3><p style="font-size: 1.2rem; color: #333; line-height: 1.5; margin-bottom: 15px;">Mi amor, todo este regalo representa una microscópica parte de todo lo que haría por vos. Espero que lo disfrutes tanto como yo desarrollando esto para vos.</p><p style="font-size: 1.2rem; color: #333; line-height: 1.5; margin-bottom: 15px;">Sos mi persona favorita y el mejor premio que me tocó ganar. Gracias por apoyarme siempre.</p><p style="text-align: right; color: #e63946; font-weight: bold; font-size: 1.5rem; margin-top: 30px;">Te amo,<br>Iván ❤️</p></div>`;
+            }
+            openModal('reward-view-overlay');
+        }
+
+        const clickSoundEffect = new Audio('../assets/sounds/click.mp3');
+        function playClickSound() { clickSoundEffect.currentTime = 0; clickSoundEffect.play().catch(e=>{}); }
+        const menuBGM = new Audio('../assets/sounds/menu_bgm.mp3'); menuBGM.loop = true; menuBGM.volume = 0.25;
+        const bgmTracks = ['../assets/sounds/bgm_1.mp3', '../assets/sounds/bgm_2.mp3', '../assets/sounds/bgm_3.mp3'];
+        let bgmAudio = new Audio(); bgmAudio.volume = 0.25; let isMusicPlaying = false; let isRadioMuted = false;
+        function playRandomBGM() { if (isRadioMuted) return; bgmAudio.src = bgmTracks[Math.floor(Math.random() * bgmTracks.length)]; bgmAudio.play().catch(e => {}); isMusicPlaying = true; }
+        bgmAudio.addEventListener('ended', playRandomBGM);
+        document.body.addEventListener('click', function initAudio() { if (document.getElementById('main-menu').style.display !== 'none') menuBGM.play().catch(e => {}); else if (!isMusicPlaying && !isRadioMuted) playRandomBGM(); document.body.removeEventListener('click', initAudio); });
+        function toggleRadio() { if (isRadioMuted) { isRadioMuted = false; if (!isMusicPlaying) playRandomBGM(); else bgmAudio.play(); } else { isRadioMuted = true; bgmAudio.pause(); } }
+        const sounds = { sizzle: new Audio('../assets/sounds/sizzle.mp3'), trash: new Audio('../assets/sounds/trash.mp3'), drop: new Audio('../assets/sounds/drop.mp3'), oven: new Audio('../assets/sounds/oven.mp3'), ding: new Audio('../assets/sounds/ding.mp3'), chopHard: new Audio('../assets/sounds/chop_hard.mp3'), chopSoft: new Audio('../assets/sounds/chop_soft.mp3'), woodstock: new Audio('../assets/sounds/woodstock.mp3'), success: new Audio('../assets/sounds/success.mp3'), fail: new Audio('../assets/sounds/fail.mp3') };
+        sounds.sizzle.loop = true; sounds.oven.loop = true; sounds.chopHard.loop = true; sounds.chopSoft.loop = true;
+        function playSound(audioObj) { audioObj.currentTime = 0; audioObj.play().catch(e => {}); }
+        function updateGrillAudio() { const grill = document.getElementById('grill-zone'); if (grill.children.length > 0) { if (sounds.sizzle.paused) sounds.sizzle.play(); } else sounds.sizzle.pause(); }
+
+        function startGame() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            menuBGM.pause(); menuBGM.currentTime = 0; if (!isRadioMuted && !isMusicPlaying) playRandomBGM();
+            checkAchievement('firstPlay');
+            score = 0; orderCount = 0; fails = 0; sessionStars = 0; canGet5Stars = true; sessionTrash = 0; sessionAch = {pizza:0, burger:0};
+            document.getElementById('score-display').innerText = "0"; document.getElementById('record-display').innerText = gameData.highScore;
+            updateHUD(); forceResetPlate(); setTimeout(generateNextOrder, 2000);
+        }
+
+        let score = 0; let fails = 0; let sessionStars = 0; let canGet5Stars = true; let sessionTrash = 0; let sessionAch = {pizza:0, burger:0};
+        let orderCount = 0; let isPaused = false; let currentOrder = null; let orderTimeRemaining = 0; let orderIntervalObj = null; let orderStartTime = 0;
+
+        const CUSTOMERS = ["Charlie Brown", "Linus", "Lucy", "Sally", "Marcie", "Peppermint Patty", "Franklin", "Schroeder"];
+        const MEAT_LEVELS = ["poco cocida", "media cocida", "bien cocida"];
+        const RECIPES = [
+            { id: "h_kids", name: "Hamburguesa Kids", isPizza: false, req: { hasTomato: false, hasCheese: false, hasLettuce: false } }, { id: "h_queso", name: "Hamburguesa de Queso", isPizza: false, req: { hasTomato: false, hasCheese: true, hasLettuce: false } }, { id: "h_zaira", name: "Hamburguesa Zaira", isPizza: false, req: { hasTomato: true, hasCheese: true, hasLettuce: false } }, { id: "h_aburrida", name: "Hamburguesa Aburridonga", isPizza: false, req: { hasTomato: true, hasCheese: false, hasLettuce: true } }, { id: "h_tomate", name: "Hamburguesa de Tomate", isPizza: false, req: { hasTomato: true, hasCheese: false, hasLettuce: false } }, { id: "h_lechuga", name: "Hamburguesa de Lechuga", isPizza: false, req: { hasTomato: false, hasCheese: false, hasLettuce: true } }, { id: "h_completa", name: "Hamburguesa Completa", isPizza: false, req: { hasTomato: true, hasCheese: true, hasLettuce: true } },
+            { id: "p_muzza", name: "Pizza Muzzarella", isPizza: true, req: { hasSauce: true, cheeseSlices: 4, isBaked: true, hasTomato: false } }, { id: "p_napo", name: "Pizza Napolitana", isPizza: true, req: { hasSauce: true, cheeseSlices: 4, isBaked: true, hasTomato: true } }
+        ];
+
+        function updateHUD() {
+            let calcStars = Math.floor(score / 100); if (!canGet5Stars && calcStars >= 5) calcStars = 4; 
+            if (calcStars > sessionStars) { let newCoins = calcStars - sessionStars; gameData.coins += newCoins; sessionStars = calcStars; saveData(); if(sessionStars === 5) checkAchievement('fiveStars'); if(gameData.coins>=10) checkAchievement('richKid'); }
+            let starStr = ""; for(let i=1; i<=5; i++) { if (i <= sessionStars) starStr += "★"; else if (i === 5 && !canGet5Stars) starStr += "❌"; else starStr += "☆"; }
+            document.getElementById('stars-display').innerText = starStr; document.getElementById('strikes-display').innerText = `Fallos: ${fails}/3`;
+        }
+
+        function generateNextOrder() {
+            orderCount++; const recipe = RECIPES[Math.floor(Math.random() * RECIPES.length)];
+            let meatLevelNum = null; let orderText = `¡Llegó un pedido de ${CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)]}!<br>`;
+            if (recipe.isPizza) { orderText += `¡Quiere una ${recipe.name}!`; } else { meatLevelNum = Math.floor(Math.random() * 3) + 1; orderText += `¡Quiere una ${recipe.name} ${MEAT_LEVELS[meatLevelNum - 1]}!`; }
+            currentOrder = { recipe: recipe, meatLevel: meatLevelNum }; document.getElementById('order-bubble').innerHTML = orderText; playSound(sounds.woodstock);
+            if (orderCount === 1) { orderTimeRemaining = Infinity; document.getElementById('timer-display').innerText = "∞"; } else { let decrement = Math.floor((orderCount - 2) / 2) * 5; orderTimeRemaining = Math.max(40, 60 - decrement); }
+            clearInterval(orderIntervalObj); orderStartTime = Date.now();
+            orderIntervalObj = setInterval(() => { if (isPaused) return; if (orderTimeRemaining !== Infinity) { orderTimeRemaining--; document.getElementById('timer-display').innerText = orderTimeRemaining + "s"; if (orderTimeRemaining <= 0) resolveOrder(false, true); } }, 1000);
+        }
+
+        function resolveOrder(isCorrect, isTimeout = false) {
+            if (isCorrect) { 
+                let pointsToAdd = 10;
+                if (gameData.unlockedBoxes.includes(1) && Math.random() < 0.10) { pointsToAdd = 15; showWarning("¡Propina Extra! +15 Pts 🌟"); }
+                score += pointsToAdd; 
+                playSound(sounds.success); gameData.totalOrdersServed++;
+                if ((Date.now() - orderStartTime) < 10000) checkAchievement('speedy');
+                if (orderTimeRemaining <= 3 && orderTimeRemaining > 0) checkAchievement('survivor');
+                if (currentOrder.recipe.isPizza) { sessionAch.pizza++; sessionAch.burger=0; if(sessionAch.pizza>=3) checkAchievement('pizzaLover'); } else { sessionAch.burger++; sessionAch.pizza=0; if(sessionAch.burger>=3) checkAchievement('burgerKing'); }
+                if (sessionTrash === 0 && score >= 500) checkAchievement('noWaste');
+            } else { 
+                score += isTimeout ? 0 : 3; playSound(sounds.fail); fails++; checkAchievement('oopsie');
+                if(fails >= 2) { canGet5Stars = false; checkAchievement('closeCall'); } sessionAch = {pizza:0, burger:0};
+            }
+            document.getElementById('score-display').innerText = score;
+            if (score > gameData.highScore) { gameData.highScore = score; document.getElementById('record-display').innerText = score; if(score >= 1000) checkAchievement('chefMaster'); }
+            if (score >= 2000) checkAchievement('marathon'); if (gameData.totalOrdersServed >= 100) checkAchievement('centurion');
+            saveData(); updateHUD(); forceResetPlate(); clearInterval(orderIntervalObj);
+            if (fails >= 3) { checkAchievement('gameOver'); document.getElementById('final-score').innerText = score; document.getElementById('game-over-overlay').style.display = 'flex'; isPaused = true; return; }
+            document.getElementById('order-bubble').innerHTML = isCorrect ? "¡Excelente! Preparando..." : "¡Esa no era! Preparando..."; setTimeout(generateNextOrder, 3000); 
+        }
+
+        function serveOrder(ev) {
+            ev.preventDefault(); const data = ev.dataTransfer.getData("text"); if (data !== "burger-instance") return;
+            let isCorrect = false; const req = currentOrder.recipe.req;
+            if (currentOrder.recipe.isPizza && dishType === "pizza") { if (currentPizza.isBaked === req.isBaked && currentPizza.hasSauce === req.hasSauce && currentPizza.cheeseSlices === req.cheeseSlices && currentPizza.hasTomato === req.hasTomato) isCorrect = true; } 
+            else if (!currentOrder.recipe.isPizza && dishType === "burger") { if (currentBurger.meatLevel === currentOrder.meatLevel && currentBurger.hasBottomBread && currentBurger.hasTopBread && currentBurger.hasTomato === req.hasTomato && currentBurger.hasCheese === req.hasCheese && currentBurger.hasLettuce === req.hasLettuce) isCorrect = true; }
+            resolveOrder(isCorrect);
+        }
+
+        let dishType = "none"; let currentBurger = { hasBottomBread: false, hasTopBread: false, meatLevel: 0, hasTomato: false, hasCheese: false, hasLettuce: false }; let currentPizza = { hasDough: false, hasSauce: false, cheeseSlices: 0, isBaked: false, hasTomato: false };
+        let draggedType = ""; let currentTool = null; let actionTimer = null; let cutInterval = null;
+
+        function forceResetPlate() { dishType = "none"; currentBurger = { hasBottomBread: false, hasTopBread: false, meatLevel: 0, hasTomato: false, hasCheese: false, hasLettuce: false }; currentPizza = { hasDough: false, hasSauce: false, cheeseSlices: 0, isBaked: false, hasTomato: false }; updateDishVisual(); }
+        function toggleRecipeBook() { isPaused = !isPaused; document.getElementById('recipe-overlay').style.display = isPaused ? 'flex' : 'none'; }
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { 
+            if(isPaused) { ev.preventDefault(); return; } const target = ev.target.closest('.ingredient-wrapper') || ev.target; const type = target.dataset.type; const state = target.dataset.state;
+            if (type === 'meat' && state && state !== 'raw' && currentTool !== 'spatula') { showWarning("¡Espátula! 🍳"); ev.preventDefault(); return; }
+            draggedType = type; ev.dataTransfer.setData("text", target.id); if(target.id.includes("menu-")) setTimeout(() => { document.getElementById('inventory-overlay').style.display = 'none'; }, 50);
+        }
+        function dragDish(ev) {
+            if(isPaused) { ev.preventDefault(); return; }
+            if (dishType === "pizza") { if (!currentPizza.isBaked && currentPizza.cheeseSlices === 4) { if (currentTool !== 'peel') { showWarning("¡Pala! 🍕"); ev.preventDefault(); return; } draggedType = "raw-pizza"; } else draggedType = currentPizza.isBaked ? "baked-pizza-complete" : "unfinished-dish"; } else if (dishType === "burger") { draggedType = "burger-complete"; } else { ev.preventDefault(); return; }
+            ev.dataTransfer.setData("text", "burger-instance");
+        }
+        function selectTool(tool) { if(isPaused) return; currentTool = (currentTool === tool) ? null : tool; document.querySelectorAll('.tool').forEach(t => t.classList.remove('active')); if (currentTool) document.getElementById(`tool-${currentTool}`).classList.add('active'); playClickSound(); }
+        function showWarning(txt) { const msg = document.getElementById('warning-msg'); msg.innerText = txt; msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 2000); }
+        function createIngredientWrapper(imgEl, barClass = '') {
+            const wrapper = document.createElement('div'); wrapper.className = 'ingredient-wrapper'; wrapper.id = "wrap-" + Date.now(); wrapper.setAttribute("draggable", "true"); wrapper.dataset.type = imgEl.dataset.type; wrapper.dataset.state = imgEl.dataset.state || "raw";
+            const progressCont = document.createElement('div'); progressCont.className = `progress-container ${barClass}`; const progressFill = document.createElement('div'); progressFill.className = 'progress-fill';
+            progressCont.appendChild(progressFill); wrapper.appendChild(imgEl); wrapper.appendChild(progressCont); wrapper.addEventListener('dragstart', drag); return { wrapper, fill: progressFill };
+        }
+
+        function dropToOven(ev) {
+            ev.preventDefault(); const data = ev.dataTransfer.getData("text");
+            if (draggedType === "raw-pizza" && currentTool === "peel") {
+                playSound(sounds.drop); playSound(sounds.oven); dishType = "none"; currentPizza.isBaked = false; updateDishVisual(); document.body.classList.add('oven-on');
+                const bakingWrap = document.createElement("div"); bakingWrap.id = "baking-pizza-wrap"; bakingWrap.className = "baking-pizza-wrap"; const pCont = document.createElement('div'); pCont.className = `progress-container oven-bar`; const fill = document.createElement('div'); fill.className = 'progress-fill'; pCont.appendChild(fill); bakingWrap.appendChild(pCont); document.getElementById('oven-zone').appendChild(bakingWrap);
+                let progress = 0; let startTime = Date.now();
+                const bakeInterval = setInterval(() => {
+                    if (isPaused) { startTime += 50; return; } let elapsed = Date.now() - startTime; progress = (elapsed / 10000) * 100;
+                    if (progress >= 100) { clearInterval(bakeInterval); sounds.oven.pause(); playSound(sounds.ding); pCont.remove(); bakingWrap.setAttribute("draggable", "true"); bakingWrap.addEventListener("dragstart", (e) => { if (currentTool !== "peel") { showWarning("¡Pala!"); e.preventDefault(); return; } draggedType = "baked-pizza-oven"; e.dataTransfer.setData("text", e.target.id); }); }
+                    fill.style.width = progress + "%";
+                }, 50);
+            }
+        }
+
+        function dropToGrill(ev) {
+            ev.preventDefault(); const data = ev.dataTransfer.getData("text"); const el = document.getElementById(data); if (el && el.parentElement && el.parentElement.id === 'grill-zone') return;
+            if (el && el.dataset.type === "meat" && document.getElementById('grill-zone').children.length < 3) {
+                const meatImg = el.cloneNode(true); const realImg = meatImg.tagName === 'IMG' ? meatImg : meatImg.querySelector('img'); const { wrapper, fill } = createIngredientWrapper(realImg.cloneNode(true), 'meat-bar');
+                wrapper.classList.add('sizzling'); document.getElementById('grill-zone').appendChild(wrapper); playSound(sounds.drop); updateGrillAudio();
+                let level = 0; let startTime = Date.now();
+                const cookTimer = setInterval(() => {
+                    if (isPaused) { startTime += 50; return; } let elapsed = Date.now() - startTime; let progress = (elapsed / 6000) * 100; 
+                    if (progress >= 100) {
+                        level++; startTime = Date.now(); progress = 0; const imgNode = wrapper.querySelector('img');
+                        if (level === 1) { imgNode.src = "../assets/images/ing_meat_rare.png"; wrapper.dataset.state = "cook-1"; } else if (level === 2) { imgNode.src = "../assets/images/ing_meat_medium.png"; wrapper.dataset.state = "cook-2"; } else if (level === 3) { imgNode.src = "../assets/images/ing_meat_welldone.png"; wrapper.dataset.state = "cook-3"; } else if (level === 4) { imgNode.src = "../assets/images/ing_meat_burnt.png"; wrapper.dataset.state = "burnt"; wrapper.classList.remove('sizzling'); clearInterval(cookTimer); wrapper.querySelector('.progress-container')?.remove(); checkAchievement('burntOffering'); }
+                    }
+                    if (level < 4) fill.style.width = progress + "%";
+                }, 50);
+                if (!data.includes("menu-")) { const oldWrap = el.closest('.ingredient-wrapper'); if (oldWrap) oldWrap.remove(); else el.remove(); }
+            }
+        }
+
+        function dropToCut(ev) {
+            ev.preventDefault(); const data = ev.dataTransfer.getData("text"); const el = document.getElementById(data); if (!el) return;
+            const validTypes = ['whole-bread', 'whole-cheese', 'tomato-sauce-bottle', 'whole-tomato', 'whole-lettuce'];
+            if (!validTypes.includes(el.dataset.type)) { showWarning("¡Eso no se corta acá! 🪵"); return; }
+            const zone = document.getElementById('cut-zone'); playSound(sounds.drop);
+            if (el.dataset.type === 'whole-cheese' || el.dataset.type === 'tomato-sauce-bottle') { const item = el.cloneNode(true); item.id = "table-item-" + Date.now(); if (el.dataset.type === 'whole-cheese') item.onclick = spawnCheeseSlice; item.setAttribute("draggable", "true"); item.addEventListener('dragstart', drag); zone.appendChild(item); if (!data.includes("menu-")) { const oldWrap = el.closest('.ingredient-wrapper'); if (oldWrap) oldWrap.remove(); else el.remove(); } return; }
+            if (zone.children.length > 0) return; const itemImg = el.tagName === 'IMG' ? el : el.querySelector('img'); const { wrapper, fill } = createIngredientWrapper(itemImg.cloneNode(true)); 
+            let activeChopSound = ['whole-bread', 'whole-cheese'].includes(el.dataset.type) ? sounds.chopHard : sounds.chopSoft;
+            const startAction = (e) => { if(isPaused) return; actionTimer = setTimeout(() => { if (currentTool !== 'knife') { showWarning("¡Cuchillo! 🔪"); return; } wrapper.classList.add('cutting'); playSound(activeChopSound); let p = 0; cutInterval = setInterval(() => { if (isPaused) return; p += 5; fill.style.width = p + "%"; if (p >= 100) { clearInterval(cutInterval); activeChopSound.pause(); finishProcessing(wrapper); } }, 100); }, 150); };
+            const stopAction = () => { clearTimeout(actionTimer); if (typeof cutInterval !== 'undefined') clearInterval(cutInterval); wrapper.classList.remove('cutting'); fill.style.width = "0%"; activeChopSound.pause(); };
+            wrapper.addEventListener('mousedown', startAction); wrapper.addEventListener('touchstart', startAction, {passive: true}); wrapper.addEventListener('mouseup', stopAction); wrapper.addEventListener('mouseleave', stopAction); wrapper.addEventListener('touchend', stopAction);
+            zone.appendChild(wrapper); if (!data.includes("menu-")) { const oldWrap = el.closest('.ingredient-wrapper'); if (oldWrap) oldWrap.remove(); else el.remove(); }
+        }
+
+        function finishProcessing(wrapper) {
+            const zone = document.getElementById('cut-zone'); const type = wrapper.dataset.type; zone.removeChild(wrapper); const addImg = (t, s) => { const img = document.createElement("img"); img.className = "ingredient"; img.dataset.type = t; img.src = "../assets/images/" + s; img.id = "proc-" + Math.random(); img.setAttribute("draggable", "true"); img.addEventListener('dragstart', drag); zone.appendChild(img); };
+            if (type === 'whole-bread') { addImg("bread-bottom", "ing_bread_bottom.png"); addImg("bread-top", "ing_bread_top.png"); } else if (type === 'whole-tomato') addImg("tomato-slices", "ing_tomato_slices.png"); else if (type === 'whole-lettuce') addImg("lettuce-slices", "ing_lettuce_slices.png");
+        }
+
+        function spawnCheeseSlice() {
+            if(isPaused) return; const zone = document.getElementById('cut-zone');
+            if (!Array.from(zone.children).find(el => el.dataset.type === 'cheese-slices')) { playSound(sounds.chopHard); setTimeout(() => sounds.chopHard.pause(), 200); const img = document.createElement("img"); img.className = "ingredient"; img.dataset.type = "cheese-slices"; img.src = "../assets/images/ing_cheese_slices.png"; img.id = "slice-" + Date.now(); img.setAttribute("draggable", "true"); img.addEventListener('dragstart', drag); zone.appendChild(img); }
+        }
+
+        function dropToPlate(ev) {
+            ev.preventDefault(); const data = ev.dataTransfer.getData("text"); const el = document.getElementById(data); if (!el) return; playSound(sounds.drop);
+            if (draggedType === "baked-pizza-oven") { document.body.classList.remove('oven-on'); document.getElementById('baking-pizza-wrap').remove(); dishType = "pizza"; currentPizza.isBaked = true; updateDishVisual(); return; }
+            const type = el.dataset.type; const state = el.dataset.state || "";
+            if (dishType === "none") { if (type === "bread-bottom") { dishType = "burger"; currentBurger.hasBottomBread = true; } else if (type === "pizza-dough") { dishType = "pizza"; currentPizza.hasDough = true; } else { showWarning("¡Iniciá con el pan o la masa!"); return; } } 
+            else if (dishType === "burger") {
+                if (type === "pizza-dough" || type === "tomato-sauce-bottle") { showWarning("¡Estás haciendo una burger!"); return; } if (type === "bread-top" && !currentBurger.hasBottomBread) { showWarning("¡Falta la base!"); return; } if (type === "meat" && (!currentBurger.hasBottomBread || !currentBurger.hasTopBread)) { showWarning("¡Cierra el pan primero!"); return; } if (["tomato-slices", "cheese-slices", "lettuce-slices"].includes(type) && currentBurger.meatLevel === 0) { showWarning("¡Falta la carne!"); return; }
+                if (type === "meat") { if(state === "cook-1") currentBurger.meatLevel = 1; else if(state === "cook-2") currentBurger.meatLevel = 2; else if(state === "cook-3") currentBurger.meatLevel = 3; }
+                else if (type === "bread-bottom") currentBurger.hasBottomBread = true; else if (type === "bread-top") currentBurger.hasTopBread = true; else if (type === "tomato-slices") currentBurger.hasTomato = true; else if (type === "cheese-slices") currentBurger.hasCheese = true; else if (type === "lettuce-slices") currentBurger.hasLettuce = true;
+                else { showWarning("¡Eso no va en la hamburguesa!"); return; }
+            } else if (dishType === "pizza") {
+                if (type === "tomato-sauce-bottle") { if (!currentPizza.hasSauce) currentPizza.hasSauce = true; document.getElementById('cut-zone').appendChild(el); updateDishVisual(); return; }
+                else if (type === "cheese-slices") { if (currentPizza.hasSauce && currentPizza.cheeseSlices < 4) { currentPizza.cheeseSlices++; } else { showWarning("¡Falta salsa o ya tiene mucho queso!"); return; } } else if (type === "tomato-slices") { if (currentPizza.isBaked && !currentPizza.hasTomato) { currentPizza.hasTomato = true; } else { showWarning("¡Tomate fresco va después de hornear!"); return; } }
+                else { showWarning("¡Eso no va en la pizza!"); return; }
+            }
+            updateDishVisual(); if (!data.includes("menu-") && type !== "pizza-dough") { const wrap = el.closest('.ingredient-wrapper'); if (wrap) { if (wrap.dataset.type === 'meat') { wrap.remove(); updateGrillAudio(); } else wrap.remove(); } else el.remove(); }
+        }
+
+        function updateDishVisual() {
+            const display = document.getElementById('burger-instance'); display.innerHTML = ''; let imgUrl = ""; display.classList.remove('is-burger', 'is-pizza');
+            if (dishType === "burger") {
+                display.classList.add('is-burger'); const { hasBottomBread, hasTopBread, meatLevel, hasTomato, hasCheese, hasLettuce } = currentBurger; let idx = 0;
+                if (hasBottomBread || hasTopBread) {
+                    if (meatLevel === 0) { if (hasBottomBread && hasTopBread) idx = 1; else if (hasBottomBread) display.innerHTML = '<img src="../assets/images/ing_bread_bottom.png" style="width:140px">'; else if (hasTopBread) display.innerHTML = '<img src="../assets/images/ing_bread_top.png" style="width:140px">'; } 
+                    else { if (!hasCheese && !hasLettuce) { if (!hasTomato) { if (meatLevel === 1) idx = 2; else if (meatLevel === 2) idx = 3; else if (meatLevel === 3) idx = 7; } else { if (meatLevel === 1) idx = 5; else if (meatLevel === 2) idx = 6; else if (meatLevel === 3) idx = 4; } } else { if (!hasTomato && hasCheese && !hasLettuce) idx = 7 + meatLevel; else if (!hasTomato && !hasCheese && hasLettuce) idx = 10 + meatLevel; else if (hasTomato && hasCheese && !hasLettuce) idx = 13 + meatLevel; else if (hasTomato && !hasCheese && hasLettuce) idx = 16 + meatLevel; else if (!hasTomato && hasCheese && hasLettuce) idx = 19 + meatLevel; else if (hasTomato && hasCheese && hasLettuce) idx = 22 + meatLevel; } }
+                }
+                if (idx > 0) imgUrl = `url('../assets/images/burger_instance_${idx}.png')`;
+            } else if (dishType === "pizza") {
+                display.classList.add('is-pizza'); 
+                if (currentPizza.isBaked) { if (currentPizza.hasTomato) imgUrl = `url('../assets/images/pizza_baked_tomato.png')`; else imgUrl = `url('../assets/images/pizza_baked.png')`; } 
+                else { if (currentPizza.cheeseSlices > 0) imgUrl = `url('../assets/images/pizza_cheese_${currentPizza.cheeseSlices}.png')`; else if (currentPizza.hasSauce) imgUrl = `url('../assets/images/pizza_sauce.png')`; else if (currentPizza.hasDough) imgUrl = `url('../assets/images/pizza_dough.png')`; }
+            }
+            display.style.backgroundImage = imgUrl !== "" ? imgUrl : "none";
+        }
+
+        function dropToTrash(ev) {
+            ev.preventDefault(); playSound(sounds.trash); const data = ev.dataTransfer.getData("text");
+            if (data === "burger-instance") { forceResetPlate(); } 
+            else { const el = document.getElementById(data); if (el && !el.closest('.inventory-menu')) { const wrapper = el.closest('.ingredient-wrapper'); if (wrapper) { if (wrapper.dataset.type === 'meat') { wrapper.remove(); updateGrillAudio(); } else wrapper.remove(); } else el.remove(); gameData.totalTrash++; sessionTrash++; saveData(); if(gameData.totalTrash >= 20) checkAchievement('trashMaster'); } }
+        }
+
+        function openMenu(type) {
+            if(isPaused) return; const overlay = document.getElementById('inventory-overlay'); const content = document.getElementById('menu-content'); content.innerHTML = '<button class="close-btn" onclick="playClickSound(); closeMenuDirect()">X</button>';
+            if (type === 'pantry') { content.innerHTML += `<img src="../assets/images/ing_bread_whole.png" class="ingredient" draggable="true" ondragstart="drag(event)" id="menu-bread" data-type="whole-bread"><img src="../assets/images/ing_tomato_sauce.png" class="ingredient" draggable="true" ondragstart="drag(event)" id="menu-sauce" data-type="tomato-sauce-bottle">`; } 
+            else { content.innerHTML += `<img src="../assets/images/ing_meat_raw.png" class="ingredient" draggable="true" ondragstart="drag(event)" id="menu-meat" data-type="meat" data-state="raw"><img src="../assets/images/ing_tomato_whole.png" class="ingredient" draggable="true" ondragstart="drag(event)" id="menu-tomato" data-type="whole-tomato"><img src="../assets/images/ing_cheese_whole.png" class="ingredient" draggable="true" ondragstart="drag(event)" id="menu-cheese" data-type="whole-cheese"><img src="../assets/images/ing_lettuce_whole.png" class="ingredient" draggable="true" ondragstart="drag(event)" id="menu-lettuce" data-type="whole-lettuce">`; }
+            overlay.style.display = 'flex'; playClickSound();
+        }
+        function closeMenuDirect() { document.getElementById('inventory-overlay').style.display = 'none'; }
+        function closeMenuOutside(ev) { if (ev.target.id === 'inventory-overlay') closeMenuDirect(); }
+        function returnToStorage(ev) { ev.preventDefault(); const d = ev.dataTransfer.getData("text"); const el = document.getElementById(d); if (el && el.dataset.type && (el.dataset.type.includes("whole") || el.dataset.type.includes("bottle")) && !el.closest('.inventory-menu')) { const wrapper = el.closest('.ingredient-wrapper'); if (wrapper) wrapper.remove(); else el.remove(); } }
+        function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+
+        updateMenuUI();
+    </script>
+</body>
+</html>
