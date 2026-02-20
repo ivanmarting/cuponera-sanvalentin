@@ -1165,18 +1165,24 @@ body.index-page {
   box-shadow: 0 0 0 #112a45, 0 2px 5px rgba(0, 0, 0, 0.4);
   filter: brightness(0.95);
 }
+.cooking-page-v2 .main-menu-overlay {
+  /* CAMBIO: Botón Fullscreen más pequeño y estilizado */
+}
 .cooking-page-v2 .main-menu-overlay .fullscreen-menu-btn {
   background: #4cc9f0;
-  border: 3px solid #000;
-  border-radius: 15px;
-  padding: 8px 20px;
+  border: 2px solid #000;
+  border-radius: 12px;
+  padding: 5px 15px;
+  font-size: 0.9rem;
   font-weight: bold;
+  color: #000;
   cursor: pointer;
-  margin-bottom: 10px;
-  box-shadow: 3px 3px 0 #000;
+  margin-bottom: 2px;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.1s;
 }
 .cooking-page-v2 .main-menu-overlay .fullscreen-menu-btn:active {
-  transform: translate(2px, 2px);
+  transform: translate(1px, 1px);
   box-shadow: 0 0 0 #000;
 }
 .cooking-page-v2 {
@@ -1769,8 +1775,8 @@ body.index-page {
   .cooking-page-v2 .window-view .woodstock-speech-bubble {
     font-size: 0.8rem;
     padding: 6px 10px;
-    bottom: 26%;
-    right: 3%;
+    bottom: 22%;
+    right: 4%;
     max-width: 160px;
   }
   .cooking-page-v2 .modal-overlay .modal-content {
