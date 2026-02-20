@@ -2,12 +2,13 @@
 
 .cooking-page-v2 {
     height: 100vh; width: 100vw; overflow: hidden; position: relative;
-    background: url('../images/kitchen_bg.png') no-repeat center center;
+    background: url('../images/kitchen_bg.jpg') no-repeat center center;
     background-size: cover;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    // Fuente Itim para máxima legibilidad en móviles
+    font-family: 'Itim', 'Quicksand', cursive, sans-serif;
     transition: background 0.3s ease; 
 
-    &.oven-on { background-image: url('../images/kitchen_bg_oven_on.png'); }
+    &.oven-on { background-image: url('../images/kitchen_bg_oven_on.jpg'); }
 
     @media (orientation: portrait) {
         &::before {
@@ -42,10 +43,10 @@
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;
         background: url('../images/menu_bg.jpg') no-repeat bottom center;
         background-size: cover;
-        display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;
+        display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px;
         overflow-y: auto; padding: 20px 0; 
         
-        .title-logo { max-width: 60%; height: auto; margin-bottom: 10px; filter: drop-shadow(0 5px 0 #1a3c5e); }
+        .title-logo { max-width: 60%; height: auto; margin-bottom: 5px; filter: drop-shadow(0 5px 0 #1a3c5e); }
 
         .menu-btn {
             background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%); 
@@ -58,6 +59,11 @@
             
             &:hover { filter: brightness(1.05); transform: translateY(-2px); box-shadow: 0 10px 0 #112a45, 0 12px 18px rgba(0,0,0,0.3); }
             &:active { transform: translateY(8px); box-shadow: 0 0 0 #112a45, 0 2px 5px rgba(0,0,0,0.4); filter: brightness(0.95); }
+        }
+
+        .fullscreen-menu-btn {
+            background: #4cc9f0; border: 3px solid #000; border-radius: 15px; padding: 8px 20px; font-weight: bold; cursor: pointer; margin-bottom: 10px; box-shadow: 3px 3px 0 #000;
+            &:active { transform: translate(2px, 2px); box-shadow: 0 0 0 #000; }
         }
     }
 
@@ -105,8 +111,9 @@
         top: 5%; left: 16%; width: 55%; height: 42%; position: absolute;
         .woodstock-speech-bubble {
             position: absolute; 
-            bottom: 12%; // AJUSTADO: Más cerca de Woodstock en PC
-            right: 2%; background: white; border: 3px solid #000; border-radius: 15px; padding: 10px 15px; font-weight: bold; font-size: 0.95rem; z-index: 20; max-width: 200px; text-align: center;
+            bottom: 16%; // Ajustado: Un poco más arriba en PC
+            right: 1%;   // Ajustado: Un poco más a la derecha en PC
+            background: white; border: 3px solid #000; border-radius: 15px; padding: 10px 15px; font-weight: bold; font-size: 0.95rem; z-index: 20; max-width: 200px; text-align: center;
             &::after { content: ''; position: absolute; bottom: -15px; right: 25px; border-width: 15px 15px 0 0; border-style: solid; border-color: #000 transparent transparent transparent; }
             &::before { content: ''; position: absolute; bottom: -10px; right: 27px; border-width: 11px 11px 0 0; border-style: solid; border-color: white transparent transparent transparent; z-index: 1; }
         }
@@ -185,8 +192,9 @@
         
         .window-view .woodstock-speech-bubble { 
             font-size: 0.8rem; padding: 6px 10px; 
-            bottom: 25%; // CORREGIDO: Bajado del 75% al 25% en Mobile
-            right: 6%; max-width: 160px; 
+            bottom: 26%; // Ajustado: Más arriba en Mobile para no tapar a Woodstock
+            right: 3%;  // Ajustado: Más a la derecha en Mobile
+            max-width: 160px; 
         }
         
         .modal-overlay .modal-content { width: 95%; padding: 10px; h2 { font-size: 1.5rem; } }

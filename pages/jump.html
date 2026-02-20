@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Snoopy Skate 🛹 - Smooth World Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/scss/main.css">
 </head>
 <body class="jump-page">
@@ -43,9 +44,12 @@
     <div id="start-screen" class="modal" style="display: block;">
         <h2>Snoopy Skate 🛹</h2>
         <p>¡Usá el celu en <b>Horizontal</b>!<br><br>
+        Llega a <b id="start-target">1000</b> puntos para el código.<br><br>
         👆👇 Desliza pantalla o usa flechas para cambiar carril.<br>
         🔘 Botones derecha para saltar o agacharte.</p>
-        <button class="btn" onclick="startGame()">¡A RODAR!</button>
+        
+        <button class="btn" onclick="toggleFullScreen()" style="background: #4cc9f0;">PANTALLA COMPLETA 📱</button>
+        <button class="btn" onclick="startGame()">EMPEZAR A JUGAR</button>
     </div>
 
     <div id="win-screen" class="modal" style="display: none;">
@@ -77,7 +81,7 @@
         const sfxJump = document.getElementById('sfx-jump');
         const sfxCrash = document.getElementById('sfx-crash');
 
-        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "bebota", "elefante", "woodstuck", "papasfritas", "hombrearaña", "silenciogil", "chipamboca", "gatitoexplota", "pinguinoenojado", "esnupi", "ca1000", "hayquematarlo"];
+        const CODIGOS_MAESTROS = ["culogordo", "ternerito", "bebota", "elefante", "woodstuck", "papasfritas", "hombrearaña", "silenciogil", "chipamboca", "colorincolorao", "gatitoexplota", "pinguinoenojado", "esnupi", "ca1000", "hayquematarlo"];
         
         // Variables globales
         let gameRunning = false, score = 0, obstacles = [], frame = 0, gameSpeed = 7, roadOffset = 0;
@@ -238,7 +242,6 @@
         }
 
         function drawBackgroundProps() {
-             // ... (Mismo código de props de la versión anterior, funciona bien) ...
              if (frame % 80 === 0) {
                 let prop = { x: canvas.width, type: currentTheme, w: 0, h: 0, color: '' };
                 if (currentTheme === 'city') {
@@ -282,7 +285,7 @@
             if(frame % 1000 === 0 && gameSpeed < 14) gameSpeed += 0.5;
 
             updateEnvironmentState();
-            updateColors(); // <--- MAGIA DE TRANSICIÓN AQUÍ
+            updateColors(); 
             drawSky();
             drawBackgroundProps();
 
@@ -303,7 +306,7 @@
             let bob = (player.grounded && !player.ducking) ? Math.sin(frame * 0.2) * 3 : 0;
 
             // DIBUJO POR CAPAS
-            drawRoadAndGround(); // <--- NUEVA FUNCIÓN PARA EL SUELO
+            drawRoadAndGround(); 
 
             obstacles.filter(o => o.lane === 0).forEach(o => {
                 o.x -= gameSpeed;
@@ -363,19 +366,13 @@
             }
         }
 
-        // NUEVA FUNCIÓN PARA DIBUJAR CARRETERA Y SUELO DINÁMICO
         function drawRoadAndGround() {
-            // 1. Carretera (Asfalto)
-            ctx.fillStyle = timeState === 'night' ? '#222' : '#444'; // Asfalto más oscuro de noche
+            ctx.fillStyle = timeState === 'night' ? '#222' : '#444';
             const roadTop = laneY[0] - 60;
             const roadBottom = laneY[1] + 40;
             ctx.fillRect(0, roadTop, canvas.width, roadBottom - roadTop);
-
-            // 2. Suelo debajo de la carretera (Relleno dinámico)
             ctx.fillStyle = `rgb(${currentGroundRGB[0]}, ${currentGroundRGB[1]}, ${currentGroundRGB[2]})`;
             ctx.fillRect(0, roadBottom, canvas.width, canvas.height - roadBottom);
-
-            // 3. Línea divisoria animada
             roadOffset -= gameSpeed; if (roadOffset < -60) roadOffset = 0;
             ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.setLineDash([30, 30]); ctx.lineDashOffset = -roadOffset;
             ctx.beginPath(); ctx.moveTo(0, (laneY[0] + laneY[1]) / 2 - 10); ctx.lineTo(canvas.width, (laneY[0] + laneY[1]) / 2 - 10); ctx.stroke(); ctx.setLineDash([]);
@@ -401,10 +398,18 @@
             }
         }
 
+        // FIX: GameOver ya no usa reload para no salir de Fullscreen
         function gameOver() { 
             gameRunning = false; if(music) music.pause(); if(sfxCrash) sfxCrash.play().catch(()=>{}); 
-            setTimeout(() => { alert("¡Chocaste! Puntaje: " + score); location.reload(); }, 100); 
+            alert("¡Chocaste! Puntaje: " + score); 
+            // Reseteo manual de variables
+            score = 0; obstacles = []; frame = 0; gameSpeed = 7; bgProps = []; roadOffset = 0;
+            document.getElementById('current-score').innerText = "0";
+            document.getElementById('start-screen').style.display = 'block'; 
+            document.getElementById('overlay').style.display = 'block'; 
+            document.getElementById('touch-controls').style.display = 'none';
         }
+
         function closeWin() { document.getElementById('win-screen').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; gameRunning = true; loop(); }
         function toggleMusic() { music.muted = !music.muted; sfxJump.muted = music.muted; sfxCrash.muted = music.muted; document.getElementById('mute-btn').innerText = music.muted ? "🔇" : "🔊"; }
         function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
